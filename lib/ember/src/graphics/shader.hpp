@@ -2,32 +2,32 @@
 #define SHADER_HPP
 
 #include <cstdint>
-#include <string_view>
 #include <filesystem>
+#include <string_view>
 
 namespace ember {
 
-    class Shader {
-        public:
-            static constexpr unsigned errorMessageLength = 512;
-            
-            Shader(unsigned type, std::string_view source);
-            ~Shader();
+class Shader {
+ public:
+  static constexpr unsigned errorMessageLength = 512;
 
-            Shader(const Shader&) = delete;
-            auto operator=(const Shader&) -> Shader& = delete;
-            
-            Shader(Shader&&);
-            auto operator=(Shader&&) -> Shader&;
+  Shader(unsigned type, std::string_view source);
+  ~Shader();
 
-            [[nodiscard]] inline auto getShaderId() const { return m_shaderId; }
+  Shader(const Shader &) = delete;
+  auto operator=(const Shader &) -> Shader & = delete;
 
-        private:
-            uint32_t m_shaderId;
-    };
+  Shader(Shader &&);
+  auto operator=(Shader &&) -> Shader &;
 
-    auto makeShaderFromFile(unsigned type, std::filesystem::path path) -> Shader;
+  [[nodiscard]] inline auto getShaderId() const { return m_shaderId; }
 
-}
+ private:
+  uint32_t m_shaderId;
+};
 
-#endif // SHADER_HPP
+auto makeShaderFromFile(unsigned type, std::filesystem::path path) -> Shader;
+
+}  // namespace ember
+
+#endif  // SHADER_HPP

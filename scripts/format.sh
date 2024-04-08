@@ -7,7 +7,7 @@ if ! command -v clang-format &> /dev/null; then
 fi
 
 DIRECTORIES=(
-    "/lib/ember"
+    "lib/ember"
     "src"
 )
 
@@ -25,7 +25,7 @@ for DIRECTORY in "${DIRECTORIES[@]}"; do
     # Loop through each file and format it using clang-format
     for FILE in $FILES; do
         echo "Formatting $FILE ..."
-        clang-format -i style=file "$FILE"
+        clang-format -i $FILE
     done
 done
 

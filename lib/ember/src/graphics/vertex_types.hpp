@@ -6,24 +6,24 @@
 
 namespace ember {
 
-    template<typename T>
-    concept Vertex = requires() {
-        { T::vertexAttrib() } -> std::same_as<void>;
-    };
+template <typename T>
+concept Vertex = requires() {
+  { T::vertexAttrib() } -> std::same_as<void>;
+};
 
-    struct PosVertex {
-        glm::vec3 pos;
+struct PosVertex {
+  glm::vec3 pos;
 
-        static auto vertexAttrib() -> void;
-    };
+  static auto vertexAttrib() -> void;
+};
 
-    struct PosColVertex {
-        glm::vec3 pos;
-        glm::vec3 col;
+struct PosColVertex {
+  glm::vec3 pos;
+  glm::vec3 col;
 
-        static auto vertexAttrib() -> void;
-    };
+  static auto vertexAttrib() -> void;
+};
 
-}
+}  // namespace ember
 
-#endif // VERTEX_TYPES_HPP
+#endif  // VERTEX_TYPES_HPP

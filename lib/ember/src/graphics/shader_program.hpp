@@ -7,29 +7,29 @@
 
 namespace ember {
 
-    class ShaderProgram {
-        public:
-            static constexpr unsigned errorMessageLength = 512;
+class ShaderProgram {
+ public:
+  static constexpr unsigned errorMessageLength = 512;
 
-            ShaderProgram(std::span<Shader> shaders);
+  ShaderProgram(std::span<Shader> shaders);
 
-            ~ShaderProgram();
+  ~ShaderProgram();
 
-            ShaderProgram(const ShaderProgram&) = delete;
-            auto operator=(const ShaderProgram&) -> ShaderProgram& = delete;
-            
-            ShaderProgram(ShaderProgram&&);
-            auto operator=(ShaderProgram&&) -> ShaderProgram&;
+  ShaderProgram(const ShaderProgram &) = delete;
+  auto operator=(const ShaderProgram &) -> ShaderProgram & = delete;
 
-            // TODO: remove this
-            auto bind() -> void;
+  ShaderProgram(ShaderProgram &&);
+  auto operator=(ShaderProgram &&) -> ShaderProgram &;
 
-            // TODO: remove this
-            [[nodiscard]] inline auto getShaderProgramId() const { return m_shaderProgramId; };
+  // TODO: remove this
+  auto bind() -> void;
 
-        private:
-            uint32_t m_shaderProgramId;
-    };
-}
+  // TODO: remove this
+  [[nodiscard]] inline auto getShaderProgramId() const { return m_shaderProgramId; };
 
-#endif // SHADER_PROGRAM_HPP
+ private:
+  uint32_t m_shaderProgramId;
+};
+}  // namespace ember
+
+#endif  // SHADER_PROGRAM_HPP
