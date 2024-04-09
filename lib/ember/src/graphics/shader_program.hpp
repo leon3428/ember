@@ -2,6 +2,7 @@
 #define SHADER_PROGRAM_HPP
 
 #include <span>
+#include <glad/glad.h>
 
 #include "shader.hpp"
 
@@ -21,8 +22,9 @@ class ShaderProgram {
   ShaderProgram(ShaderProgram &&);
   auto operator=(ShaderProgram &&) -> ShaderProgram &;
 
-  // TODO: remove this
-  auto bind() -> void;
+  
+  inline auto bind() const { glUseProgram(m_shaderProgramId); };
+  inline auto unbind() const { glUseProgram(0); };
 
   // TODO: remove this
   [[nodiscard]] inline auto getShaderProgramId() const { return m_shaderProgramId; };

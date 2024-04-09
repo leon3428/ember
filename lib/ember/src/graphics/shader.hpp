@@ -20,6 +20,7 @@ class Shader {
   Shader(Shader &&);
   auto operator=(Shader &&) -> Shader &;
 
+  // TODO: this might not be necessary
   [[nodiscard]] inline auto getShaderId() const { return m_shaderId; }
 
  private:

@@ -47,9 +47,9 @@ auto ember::Shader::operator=(Shader &&other) -> Shader & {
 auto ember::makeShaderFromFile(unsigned type, std::filesystem::path path) -> Shader {
   auto shaderSource = readFile(path);
 
-  if (shaderSource) {
-    return Shader(type, *shaderSource);
+  if (!shaderSource) {
+    throw std::runtime_error(std::format("File {} does not exist", path.c_str()));
   }
 
-  throw std::runtime_error(std::format("File {} does not exist", path.c_str()));
+  return Shader(type, *shaderSource);
 }

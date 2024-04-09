@@ -45,7 +45,3 @@ auto ember::ShaderProgram::operator=(ShaderProgram &&other) -> ShaderProgram & {
 
   return *this;
 }
-
-auto ember::ShaderProgram::bind() -> void {
-  if (m_shaderProgramId != 0) glUseProgram(m_shaderProgramId);
-}

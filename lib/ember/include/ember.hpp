@@ -6,5 +6,11 @@
 #include "../src/graphics/shader.hpp"
 #include "../src/graphics/shader_program.hpp"
 #include "../src/graphics/static_mesh.hpp"
+#include "../src/graphics/mesh.hpp"
+#include "../src/graphics/material.hpp"
+#include "../src/graphics/solid_color_material.hpp"
+#include "../src/graphics/render_group.hpp"
+#include "../src/graphics/render_engine.hpp"
+#include "../src/resource_manager/resource_manager.hpp"
 
 #endif  // EMBER_HPP

@@ -1,12 +1,12 @@
-#include "base_mesh.hpp"
+#include "mesh.hpp"
 
-ember::BaseMesh::~BaseMesh() {
+ember::Mesh::~Mesh() {
   if (m_VAO != 0) glDeleteVertexArrays(1, &m_VAO);
   if (m_VBO != 0) glDeleteBuffers(1, &m_VBO);
   if (m_EBO != 0) glDeleteBuffers(1, &m_EBO);
 }
 
-ember::BaseMesh::BaseMesh(BaseMesh &&other) {
+ember::Mesh::Mesh(Mesh &&other) {
   m_VBO = other.m_VBO;
   other.m_VBO = 0;
 
@@ -17,7 +17,7 @@ ember::BaseMesh::BaseMesh(BaseMesh &&other) {
   other.m_VAO = 0;
 }
 
-auto ember::BaseMesh::operator=(BaseMesh &&other) -> ember::BaseMesh & {
+auto ember::Mesh::operator=(Mesh &&other) -> ember::Mesh & {
   if (this != &other) {
     if (m_VBO != 0) glDeleteBuffers(1, &m_VBO);
 

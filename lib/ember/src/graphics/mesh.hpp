@@ -1,18 +1,24 @@
-#ifndef BASE_MESH_HPP
-#define BASE_MESH_HPP
-
-#include <span>
+#ifndef MESH_HPP
+#define MESH_HPP
 
 #include <glad/glad.h>
+#include <span>
 
 #include "vertex_types.hpp"
 
 namespace ember {
 
-class BaseMesh {
+class Mesh {
  public:
+  [[nodiscard]] inline auto getNumVertices() const { return m_numVertices; }
+
+  inline auto bind() const { glBindVertexArray(m_VAO); }
+  inline auto unbind() const { glBindVertexArray(0); }
+
+ protected:
+ 
   template <Vertex T>
-  BaseMesh(std::span<T> vertices, std::span<uint32_t> indices, GLenum usage) {
+  Mesh(std::span<T> vertices, std::span<uint32_t> indices, GLenum usage) {
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
 
@@ -34,16 +40,13 @@ class BaseMesh {
   }
 
   // class is not copyable
-  BaseMesh(const BaseMesh &) = delete;
-  auto operator=(const BaseMesh &) -> BaseMesh & = delete;
+  Mesh(const Mesh &) = delete;
+  auto operator=(const Mesh &) -> Mesh & = delete;
 
-  BaseMesh(BaseMesh &&other);
-  auto operator=(BaseMesh &&other) -> BaseMesh &;
-
-  [[nodiscard]] inline auto getNumVertices() const { return m_numVertices; }
-
- protected:
-  ~BaseMesh();
+  Mesh(Mesh &&other);
+  auto operator=(Mesh &&other) -> Mesh &;
+  
+  ~Mesh();
 
   uint32_t m_VAO;
   uint32_t m_VBO;
@@ -54,4 +57,4 @@ class BaseMesh {
 
 }  // namespace ember
 
-#endif  // BASE_MESH_HPP
+#endif  // MESH_HPP

@@ -1,16 +1,16 @@
 #ifndef DYNAMIC_MESH_HPP
 #define DYNAMIC_MESH_HPP
 
-#include "base_mesh.hpp"
+#include "mesh.hpp"
 
 namespace ember {
 
 // TODO: This class is incomplete
 template <Vertex T>
-class DynamicMesh : public BaseMesh {
+class DynamicMesh : public Mesh {
  public:
   DynamicMesh(size_t maxVertices, size_t maxIndices)
-      : BaseMesh(std::span<T>(foo, maxVertices), std::span<uint32_t>(bar, maxIndices), GL_DYNAMIC_DRAW) {
+      : Mesh(std::span<T>(foo, maxVertices), std::span<uint32_t>(bar, maxIndices), GL_DYNAMIC_DRAW) {
     m_numVertices = 0;
   }
 
@@ -27,12 +27,6 @@ class DynamicMesh : public BaseMesh {
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, i * sizeof(uint32_t), sizeof(uint32_t), &index);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
-
-  // TODO: remove this
-  inline auto bind() const { glBindVertexArray(m_VAO); }
-
-  // TODO: remove this
-  inline auto unbind() const { glBindVertexArray(0); }
 
  private:
   // TODO: this is a bit hacky
