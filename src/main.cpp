@@ -17,6 +17,7 @@ int main(int, char *argv[]) {
     auto &resourceManager = ember::getResourceManager();
     auto &resourceMap = resourceManager.getResourceMap();
     resourceMap.addNamedResource("shaderFolder"_id, "./shaders");
+    resourceMap.addNamedResource("head"_id, "./assets/glava.obj");
 
     auto width = 800;
     auto height = 600;
@@ -36,22 +37,17 @@ int main(int, char *argv[]) {
     auto renderer = glGetString(GL_RENDERER);
     std::cout << vendor << '\n' << renderer << '\n';
 
-    std::array<ember::PosVertex, 4> vertices = {
-        ember::PosVertex{glm::vec3{0.5f, 0.5f, 0.0f}}, ember::PosVertex{glm::vec3{0.5f, -0.5f, 0.0f}},
-        ember::PosVertex{glm::vec3{-0.5f, -0.5f, 0.0f}}, ember::PosVertex{glm::vec3{-0.5f, 0.5f, 0.0f}}};
+    auto mesh = resourceManager.getStaticMesh("head"_id);
+    ember::SolidColorMaterial material1;
+    ember::RenderGroup renderGroup1 = {&material1, mesh, mesh->getNumVertices(), 0};
+    ember::Transform transform1;
 
-    uint32_t indices[] = {
-        // note that we start from 0!
-        0, 1, 3,  // first triangle
-        1, 2, 3   // second triangle
-    };
-
-    ember::StaticMesh mesh(std::span<ember::PosVertex>{vertices}, indices);
-    ember::SolidColorMaterial material;
-
-    ember::RenderGroup renderGroup = {&material, &mesh, mesh.getNumVertices(), 0};
-    ember::Transform transform;
-    transform.rotation = glm::rotate(transform.rotation, glm::radians(45.0f), {0.0, 1.0, 0.0});
+    ember::SolidColorMaterial material2;
+    material2.color = {0.0f, 1.0f, 1.0f, 1.0f};
+    ember::RenderGroup renderGroup2 = {&material2, mesh, mesh->getNumVertices(), 0};
+    ember::Transform transform2;
+    transform2.position.x = 4;
+    transform2.rotation = glm::rotate(transform2.rotation, glm::radians(45.0f), {0.0, 1.0, 0.0});
 
     renderEngine.wireframeMode();
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -69,7 +65,8 @@ int main(int, char *argv[]) {
 
       cameraController.update(deltaTime);
 
-      renderEngine.queue(renderGroup, transform);
+      renderEngine.queue(renderGroup1, transform1);
+      renderEngine.queue(renderGroup2, transform2);
 
       window.update();
     }

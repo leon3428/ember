@@ -5,6 +5,7 @@
 #include "../core/utils.hpp"
 #include "../graphics/shader_program.hpp"
 #include "resource_map.hpp"
+#include "../graphics/static_mesh.hpp"
 
 namespace ember {
 
@@ -13,13 +14,14 @@ class ResourceManager {
   ResourceManager();
 
   [[nodiscard]] auto getShaderProgram(Identifier idn) -> ShaderProgram *;
+  [[nodiscard]] auto getStaticMesh(Identifier idn) -> StaticMesh *;
   [[nodiscard]] inline auto getResourceMap() -> ResourceMap & { return m_resourceMap; }
 
   inline auto clear() -> void { m_resourceCache.clear(); }
 
  private:
   ResourceMap m_resourceMap;
-  ConflictFreeVariantHashMap<uint32_t, ShaderProgram> m_resourceCache;
+  ConflictFreeVariantHashMap<uint32_t, ShaderProgram, StaticMesh> m_resourceCache;
 };
 
 inline auto getResourceManager() -> ResourceManager& {

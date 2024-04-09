@@ -15,6 +15,9 @@ ember::Mesh::Mesh(Mesh &&other) {
 
   m_VAO = other.m_VAO;
   other.m_VAO = 0;
+
+  m_numVertices = other.m_numVertices;
+  other.m_numVertices = 0;
 }
 
 auto ember::Mesh::operator=(Mesh &&other) -> ember::Mesh & {
@@ -33,6 +36,9 @@ auto ember::Mesh::operator=(Mesh &&other) -> ember::Mesh & {
 
     m_VAO = other.m_VAO;
     other.m_VAO = 0;
+
+    m_numVertices = other.m_numVertices;
+    other.m_numVertices = 0;
   }
 
   return *this;

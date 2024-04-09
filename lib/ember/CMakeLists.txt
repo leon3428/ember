@@ -25,6 +25,7 @@ set(PROJECT_HEADERS
     src/graphics/camera.hpp
     src/graphics/perspective_camera.hpp
     src/graphics/fps_camera_controller.hpp
+    src/graphics/mesh_loader.hpp
 
     src/resource_manager/resource_manager.hpp
     src/resource_manager/resource_map.hpp
@@ -48,6 +49,7 @@ set(PROJECT_SOURCES
     src/graphics/material.cpp
     src/graphics/perspective_camera.cpp
     src/graphics/fps_camera_controller.cpp
+    src/graphics/mesh_loader.cpp
 
     src/resource_manager/resource_manager.cpp
     src/resource_manager/resource_map.cpp
@@ -57,5 +59,5 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNDEBUG")
 
 add_library(${PROJECT_NAME}_lib STATIC ${PROJECT_SOURCES} ${PROJECT_HEADERS})
 target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wall -Wextra -Wpedantic -std=c++20)
-target_link_libraries(${PROJECT_NAME}_lib glad glfw glm)
+target_link_libraries(${PROJECT_NAME}_lib glad glfw glm assimp)
 target_include_directories(${PROJECT_NAME}_lib  PRIVATE ../../external)
