@@ -1,18 +1,20 @@
 #ifndef RENDER_ENGINE_HPP
 #define RENDER_ENGINE_HPP
 
-#include "render_group.hpp"
-#include "../core/window.hpp"
+#include <glad/glad.h>
 #include "../core/transform.hpp"
+#include "../core/window.hpp"
 #include "camera.hpp"
+#include "render_group.hpp"
 
 namespace ember {
 
 class RenderEngine {
  public:
-  RenderEngine(Window& window);
+  RenderEngine(Window &window);
 
-  void queue(const RenderGroup& renderGroup, const Transform& transform);
+  void queue(const RenderGroup &renderGroup, const Transform &transform);
+  auto wireframeMode() -> void;
 
   // TODO: remove this
   ICamera *pActiveCamera;

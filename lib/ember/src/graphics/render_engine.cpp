@@ -111,9 +111,12 @@ void ember::RenderEngine::queue(const RenderGroup &renderGroup, const Transform 
   renderGroup.pMaterial->uploadUniforms();
 
   auto [width, height] = m_window.getSize();
-  auto mvp = pActiveCamera->getProjectionMatrix(width, height) * pActiveCameraTransform->getInverse() * transform.getMatrix();
+  auto mvp =
+      pActiveCamera->getProjectionMatrix(width, height) * pActiveCameraTransform->getMatrix() * transform.getMatrix();
   renderGroup.pMaterial->uploadMvp(mvp);
 
   glDrawElements(GL_TRIANGLES, renderGroup.vertexCnt, GL_UNSIGNED_INT,
                  reinterpret_cast<void *>(renderGroup.byteOffset));
 }
+
+auto ember::RenderEngine::wireframeMode() -> void { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); }

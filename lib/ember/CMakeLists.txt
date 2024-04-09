@@ -24,6 +24,7 @@ set(PROJECT_HEADERS
     src/graphics/material.hpp
     src/graphics/camera.hpp
     src/graphics/perspective_camera.hpp
+    src/graphics/fps_camera_controller.hpp
 
     src/resource_manager/resource_manager.hpp
     src/resource_manager/resource_map.hpp
@@ -46,6 +47,7 @@ set(PROJECT_SOURCES
     src/graphics/solid_color_material.cpp
     src/graphics/material.cpp
     src/graphics/perspective_camera.cpp
+    src/graphics/fps_camera_controller.cpp
 
     src/resource_manager/resource_manager.cpp
     src/resource_manager/resource_map.cpp
