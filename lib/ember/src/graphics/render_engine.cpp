@@ -1,7 +1,7 @@
 #include "render_engine.hpp"
 
-#include <iostream>
 #include <glad/glad.h>
+#include <iostream>
 
 #ifdef NDEBUG
 
@@ -94,21 +94,26 @@ ember::RenderEngine::RenderEngine(Window &window) : m_window(window) {
   auto [width, height] = window.getSize();
   glViewport(0, 0, width, height);
 
-  #ifdef NDEBUG
-    glEnable(GL_DEBUG_OUTPUT);
-    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-    glDebugMessageCallback(glDebugOutput, nullptr);
-    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-  #endif
+#ifdef NDEBUG
+  glEnable(GL_DEBUG_OUTPUT);
+  glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+  glDebugMessageCallback(glDebugOutput, nullptr);
+  glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+#endif
 
   auto &eventBus = window.getEventBus();
   eventBus.subscribe<ember::ResizeEvent>([](const ember::ResizeEvent &e) { glViewport(0, 0, e.width, e.height); });
 }
 
-void ember::RenderEngine::queue(const RenderGroup &renderGroup) {
+void ember::RenderEngine::queue(const RenderGroup &renderGroup, const Transform &transform) {
   renderGroup.pMaterial->bindProgram();
   renderGroup.pMesh->bind();
   renderGroup.pMaterial->uploadUniforms();
+
+  auto [width, height] = m_window.getSize();
+  auto mvp = pActiveCamera->getProjectionMatrix(width, height) * pActiveCameraTransform->getInverse() * transform.getMatrix();
+  renderGroup.pMaterial->uploadMvp(mvp);
+
   glDrawElements(GL_TRIANGLES, renderGroup.vertexCnt, GL_UNSIGNED_INT,
                  reinterpret_cast<void *>(renderGroup.byteOffset));
 }

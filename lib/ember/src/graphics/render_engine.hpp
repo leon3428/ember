@@ -3,6 +3,8 @@
 
 #include "render_group.hpp"
 #include "../core/window.hpp"
+#include "../core/transform.hpp"
+#include "camera.hpp"
 
 namespace ember {
 
@@ -10,7 +12,11 @@ class RenderEngine {
  public:
   RenderEngine(Window& window);
 
-  void queue(const RenderGroup& renderGroup);
+  void queue(const RenderGroup& renderGroup, const Transform& transform);
+
+  // TODO: remove this
+  ICamera *pActiveCamera;
+  Transform *pActiveCameraTransform;
 
  private:
   Window &m_window;

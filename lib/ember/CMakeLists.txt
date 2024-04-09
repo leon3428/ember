@@ -7,6 +7,7 @@ set(PROJECT_HEADERS
     src/core/mouse_button_codes.hpp
     src/core/window.hpp
     src/core/conflict_free_variant_hash_map.hpp
+    src/core/transform.hpp
 
     src/graphics/render_engine.hpp
     src/graphics/render_group.hpp
@@ -21,6 +22,8 @@ set(PROJECT_HEADERS
     src/graphics/mesh.hpp
     src/graphics/solid_color_material.hpp
     src/graphics/material.hpp
+    src/graphics/camera.hpp
+    src/graphics/perspective_camera.hpp
 
     src/resource_manager/resource_manager.hpp
     src/resource_manager/resource_map.hpp
@@ -29,6 +32,7 @@ set(PROJECT_HEADERS
 set(PROJECT_SOURCES 
     src/core/utils.cpp
     src/core/window.cpp
+    src/core/transform.cpp
 
     src/graphics/render_engine.cpp
 
@@ -41,6 +45,7 @@ set(PROJECT_SOURCES
     src/graphics/mesh.cpp
     src/graphics/solid_color_material.cpp
     src/graphics/material.cpp
+    src/graphics/perspective_camera.cpp
 
     src/resource_manager/resource_manager.cpp
     src/resource_manager/resource_map.cpp

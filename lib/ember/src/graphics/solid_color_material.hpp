@@ -12,9 +12,11 @@ class SolidColorMaterial : public Material {
   glm::vec4 color;
 
   virtual auto uploadUniforms() const -> void override;
+  virtual auto uploadMvp(const glm::mat4 &mvp) const -> void override;
 
  private:
   int m_colorLocation;
+  int m_mvpLocation;
 };
 }  // namespace ember
 
