@@ -2,6 +2,7 @@
 #define RENDER_ENGINE_HPP
 
 #include <glad/glad.h>
+#include <vector>
 #include "../core/transform.hpp"
 #include "../core/window.hpp"
 #include "camera.hpp"
@@ -13,8 +14,7 @@ class RenderEngine {
  public:
   RenderEngine(Window &window);
 
-  auto frameStart() -> void;
-  auto queue(const RenderGroup &renderGroup, const Transform &transform) -> void;
+  auto render(const std::vector<RenderGroup> &renderGroups, const std::vector<Transform> &transforms) -> void;
   auto wireframeMode() -> void;
 
   inline auto drawAxis() -> void { m_drawAxis = true; }

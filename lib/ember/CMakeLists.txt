@@ -28,6 +28,7 @@ set(PROJECT_HEADERS
     src/graphics/fps_camera_controller.hpp
     src/graphics/mesh_loader.hpp
     src/graphics/axis_mesh.hpp
+    src/graphics/object_controller.hpp
 
     src/resource_manager/resource_manager.hpp
     src/resource_manager/resource_map.hpp
@@ -53,6 +54,7 @@ set(PROJECT_SOURCES
     src/graphics/perspective_camera.cpp
     src/graphics/fps_camera_controller.cpp
     src/graphics/mesh_loader.cpp
+    src/graphics/object_controller.cpp
 
     src/resource_manager/resource_manager.cpp
     src/resource_manager/resource_map.cpp

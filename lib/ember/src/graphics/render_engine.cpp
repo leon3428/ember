@@ -106,7 +106,8 @@ ember::RenderEngine::RenderEngine(Window &window) : m_window(window), m_drawAxis
   eventBus.subscribe<ember::ResizeEvent>([](const ember::ResizeEvent &e) { glViewport(0, 0, e.width, e.height); });
 }
 
-auto ember::RenderEngine::frameStart() -> void {
+auto ember::RenderEngine::render(const std::vector<RenderGroup> &renderGroups, const std::vector<Transform> &transforms)
+    -> void {
   glClear(GL_COLOR_BUFFER_BIT);
 
   if (m_drawAxis) {
@@ -122,29 +123,34 @@ auto ember::RenderEngine::frameStart() -> void {
     glDrawElements(GL_LINES, axisRenderGroup.vertexCnt, GL_UNSIGNED_INT,
                    reinterpret_cast<void *>(axisRenderGroup.byteOffset));
   }
-}
 
-void ember::RenderEngine::queue(const RenderGroup &renderGroup, const Transform &transform) {
-  renderGroup.pMaterial->bindProgram();
-  renderGroup.pMesh->bind();
-  renderGroup.pMaterial->uploadUniforms();
+  for (size_t i = 0; i < renderGroups.size(); i++) {
+    renderGroups[i].pMaterial->bindProgram();
+    renderGroups[i].pMesh->bind();
+    renderGroups[i].pMaterial->uploadUniforms();
 
-  auto [width, height] = m_window.getSize();
-  auto mvp = pActiveCamera->getProjectionMatrix(width, height) * pActiveCamera->getViewMatrix() * transform.getMatrix();
-  renderGroup.pMaterial->uploadMvp(mvp);
+    auto [width, height] = m_window.getSize();
+    auto mvp =
+        pActiveCamera->getProjectionMatrix(width, height) * pActiveCamera->getViewMatrix() * transforms[i].getMatrix();
+    renderGroups[i].pMaterial->uploadMvp(mvp);
 
-  glDrawElements(GL_TRIANGLES, renderGroup.vertexCnt, GL_UNSIGNED_INT,
-                 reinterpret_cast<void *>(renderGroup.byteOffset));
-
+    glDrawElements(GL_TRIANGLES, renderGroups[i].vertexCnt, GL_UNSIGNED_INT,
+                   reinterpret_cast<void *>(renderGroups[i].byteOffset));
+  }
   if (m_drawAxis) {
     auto axisRenderGroup = getAxisRenderGroup();
-
     axisRenderGroup.pMaterial->bindProgram();
     axisRenderGroup.pMesh->bind();
-    axisRenderGroup.pMaterial->uploadMvp(mvp);
 
-    glDrawElements(GL_LINES, axisRenderGroup.vertexCnt, GL_UNSIGNED_INT,
-                   reinterpret_cast<void *>(axisRenderGroup.byteOffset));
+    for (size_t i = 0; i < renderGroups.size(); i++) {
+      auto [width, height] = m_window.getSize();
+      auto mvp = pActiveCamera->getProjectionMatrix(width, height) * pActiveCamera->getViewMatrix() *
+                 transforms[i].getMatrix();
+      axisRenderGroup.pMaterial->uploadMvp(mvp);
+
+      glDrawElements(GL_LINES, axisRenderGroup.vertexCnt, GL_UNSIGNED_INT,
+                     reinterpret_cast<void *>(axisRenderGroup.byteOffset));
+    }
   }
 }
 

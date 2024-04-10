@@ -14,6 +14,7 @@
 #include "../src/graphics/render_engine.hpp"
 #include "../src/graphics/perspective_camera.hpp"
 #include "../src/graphics/fps_camera_controller.hpp"
+#include "../src/graphics/object_controller.hpp"
 #include "../src/resource_manager/resource_manager.hpp"
 
 #endif  // EMBER_HPP
