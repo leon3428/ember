@@ -21,11 +21,13 @@ set(PROJECT_HEADERS
 
     src/graphics/mesh.hpp
     src/graphics/solid_color_material.hpp
+    src/graphics/vertex_color_material.hpp
     src/graphics/material.hpp
     src/graphics/camera.hpp
     src/graphics/perspective_camera.hpp
     src/graphics/fps_camera_controller.hpp
     src/graphics/mesh_loader.hpp
+    src/graphics/axis_mesh.hpp
 
     src/resource_manager/resource_manager.hpp
     src/resource_manager/resource_map.hpp
@@ -46,6 +48,7 @@ set(PROJECT_SOURCES
 
     src/graphics/mesh.cpp
     src/graphics/solid_color_material.cpp
+    src/graphics/vertex_color_material.cpp
     src/graphics/material.cpp
     src/graphics/perspective_camera.cpp
     src/graphics/fps_camera_controller.cpp

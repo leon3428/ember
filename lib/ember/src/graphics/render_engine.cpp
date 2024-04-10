@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <iostream>
+#include "axis_mesh.hpp"
 
 #ifdef NDEBUG
 
@@ -86,7 +87,7 @@ void glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity,
 
 #endif
 
-ember::RenderEngine::RenderEngine(Window &window) : m_window(window) {
+ember::RenderEngine::RenderEngine(Window &window) : m_window(window), m_drawAxis(false) {
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     throw std::runtime_error("Failed to initialize GLAD");
   }
@@ -105,18 +106,46 @@ ember::RenderEngine::RenderEngine(Window &window) : m_window(window) {
   eventBus.subscribe<ember::ResizeEvent>([](const ember::ResizeEvent &e) { glViewport(0, 0, e.width, e.height); });
 }
 
+auto ember::RenderEngine::frameStart() -> void {
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  if (m_drawAxis) {
+    auto axisRenderGroup = getAxisRenderGroup();
+
+    axisRenderGroup.pMaterial->bindProgram();
+    axisRenderGroup.pMesh->bind();
+
+    auto [width, height] = m_window.getSize();
+    auto mvp = pActiveCamera->getProjectionMatrix(width, height) * pActiveCamera->getViewMatrix();
+    axisRenderGroup.pMaterial->uploadMvp(mvp);
+
+    glDrawElements(GL_LINES, axisRenderGroup.vertexCnt, GL_UNSIGNED_INT,
+                   reinterpret_cast<void *>(axisRenderGroup.byteOffset));
+  }
+}
+
 void ember::RenderEngine::queue(const RenderGroup &renderGroup, const Transform &transform) {
   renderGroup.pMaterial->bindProgram();
   renderGroup.pMesh->bind();
   renderGroup.pMaterial->uploadUniforms();
 
   auto [width, height] = m_window.getSize();
-  auto mvp =
-      pActiveCamera->getProjectionMatrix(width, height) * pActiveCameraTransform->getMatrix() * transform.getMatrix();
+  auto mvp = pActiveCamera->getProjectionMatrix(width, height) * pActiveCamera->getViewMatrix() * transform.getMatrix();
   renderGroup.pMaterial->uploadMvp(mvp);
 
   glDrawElements(GL_TRIANGLES, renderGroup.vertexCnt, GL_UNSIGNED_INT,
                  reinterpret_cast<void *>(renderGroup.byteOffset));
+
+  if (m_drawAxis) {
+    auto axisRenderGroup = getAxisRenderGroup();
+
+    axisRenderGroup.pMaterial->bindProgram();
+    axisRenderGroup.pMesh->bind();
+    axisRenderGroup.pMaterial->uploadMvp(mvp);
+
+    glDrawElements(GL_LINES, axisRenderGroup.vertexCnt, GL_UNSIGNED_INT,
+                   reinterpret_cast<void *>(axisRenderGroup.byteOffset));
+  }
 }
 
 auto ember::RenderEngine::wireframeMode() -> void { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); }

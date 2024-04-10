@@ -13,15 +13,18 @@ class RenderEngine {
  public:
   RenderEngine(Window &window);
 
-  void queue(const RenderGroup &renderGroup, const Transform &transform);
+  auto frameStart() -> void;
+  auto queue(const RenderGroup &renderGroup, const Transform &transform) -> void;
   auto wireframeMode() -> void;
+
+  inline auto drawAxis() -> void { m_drawAxis = true; }
 
   // TODO: remove this
   ICamera *pActiveCamera;
-  Transform *pActiveCameraTransform;
 
  private:
   Window &m_window;
+  bool m_drawAxis;
 };
 }  // namespace ember
 

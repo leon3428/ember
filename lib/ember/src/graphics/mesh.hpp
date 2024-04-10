@@ -18,7 +18,7 @@ class Mesh {
  protected:
  
   template <Vertex T>
-  Mesh(std::span<T> vertices, std::span<uint32_t> indices, GLenum usage) {
+  Mesh(std::span<T> vertices, std::span<const uint32_t> indices, GLenum usage) {
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
 

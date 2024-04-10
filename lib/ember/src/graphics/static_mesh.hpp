@@ -8,7 +8,7 @@ namespace ember {
 class StaticMesh : public Mesh {
  public:
   template <Vertex T>
-  StaticMesh(std::span<T> vertices, std::span<uint32_t> indices) : Mesh(vertices, indices, GL_STATIC_DRAW) {}
+  StaticMesh(std::span<T> vertices, std::span<const uint32_t> indices) : Mesh(vertices, indices, GL_STATIC_DRAW) {}
 };
 
 }  // namespace ember
