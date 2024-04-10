@@ -8,6 +8,7 @@ set(PROJECT_HEADERS
     src/core/window.hpp
     src/core/conflict_free_variant_hash_map.hpp
     src/core/transform.hpp
+    src/core/my_glm.hpp
 
     src/graphics/render_engine.hpp
     src/graphics/render_group.hpp
@@ -38,6 +39,7 @@ set(PROJECT_SOURCES
     src/core/utils.cpp
     src/core/window.cpp
     src/core/transform.cpp
+    src/core/my_glm.cpp
 
     src/graphics/render_engine.cpp
 
