@@ -1,5 +1,5 @@
-#ifndef RENDER_GROUP_HPP
-#define RENDER_GROUP_HPP
+#ifndef RENDERABLE_HPP
+#define RENDERABLE_HPP
 
 #include <cstddef>
 
@@ -7,10 +7,14 @@
 
 #include "material.hpp"
 #include "mesh.hpp"
+#include "object3d.hpp"
 
 namespace ember {
 
-struct RenderGroup {
+class Renderable : public Object3d {
+ public:
+  Renderable();
+
   Material *pMaterial;
   Mesh *pMesh;
   size_t vertexCnt;
@@ -19,4 +23,4 @@ struct RenderGroup {
 
 }  // namespace ember
 
-#endif  // RENDER_GROUP_HPP
+#endif  // RENDERABLE_HPP

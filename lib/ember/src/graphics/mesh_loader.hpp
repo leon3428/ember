@@ -2,12 +2,11 @@
 #define MESH_LOADER_HPP
 
 #include "../core/utils.hpp"
-#include "../resource_manager/resource_map.hpp"
-#include "static_mesh.hpp"
+#include "mesh.hpp"
 
-namespace ember::static_mesh {
+namespace ember::mesh {
 
-auto load(Identifier idn, const ResourceMap &resourceMap) -> StaticMesh;
+auto load(Identifier idn) -> Mesh;
 
 }  // namespace ember::mesh
 

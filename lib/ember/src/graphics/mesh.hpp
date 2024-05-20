@@ -10,27 +10,20 @@ namespace ember {
 
 class Mesh {
  public:
-  [[nodiscard]] inline auto getNumVertices() const { return m_numVertices; }
-
-  inline auto bind() const { glBindVertexArray(m_VAO); }
-  inline auto unbind() const { glBindVertexArray(0); }
-
- protected:
- 
   template <Vertex T>
-  Mesh(std::span<T> vertices, std::span<const uint32_t> indices, GLenum usage) {
+  Mesh(std::span<T> vertices, std::span<const uint32_t> indices) {
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
 
     glGenBuffers(1, &m_VBO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size_bytes(), vertices.data(), usage);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size_bytes(), vertices.data(), GL_STATIC_DRAW);
 
     T::vertexAttrib();
 
     glGenBuffers(1, &m_EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size_bytes(), indices.data(), usage);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size_bytes(), indices.data(), GL_STATIC_DRAW);
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -45,9 +38,15 @@ class Mesh {
 
   Mesh(Mesh &&other);
   auto operator=(Mesh &&other) -> Mesh &;
-  
+
   ~Mesh();
 
+  [[nodiscard]] inline auto getNumVertices() const { return m_numVertices; }
+
+  inline auto bind() const { glBindVertexArray(m_VAO); }
+  inline auto unbind() const { glBindVertexArray(0); }
+
+ private:
   uint32_t m_VAO;
   uint32_t m_VBO;
   uint32_t m_EBO;

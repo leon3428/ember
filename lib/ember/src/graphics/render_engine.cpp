@@ -2,7 +2,9 @@
 
 #include <glad/glad.h>
 #include <iostream>
-#include "axis_mesh.hpp"
+#include "../resource_manager/resource_manager.hpp"
+#include "node.hpp"
+#include "renderable.hpp"
 
 #ifdef NDEBUG
 
@@ -104,53 +106,45 @@ ember::RenderEngine::RenderEngine(Window &window) : m_window(window), m_drawAxis
 
   auto &eventBus = window.getEventBus();
   eventBus.subscribe<ember::ResizeEvent>([](const ember::ResizeEvent &e) { glViewport(0, 0, e.width, e.height); });
+
+  std::array<PosColVertex, 6> axisVertices = {ember::PosColVertex({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}),
+                                              ember::PosColVertex({1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}),
+                                              ember::PosColVertex({0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}),
+                                              ember::PosColVertex({0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}),
+                                              ember::PosColVertex({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}),
+                                              ember::PosColVertex({0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f})};
+
+  std::array<uint32_t, 6> axisIndices = {0, 1, 2, 3, 4, 5};
+  Mesh mesh(std::span<const PosColVertex>{axisVertices}, axisIndices);
+
+  getResourceManager()->moveMesh("axisMesh"_id, std::move(mesh));
 }
 
-auto ember::RenderEngine::render(const std::vector<RenderGroup> &renderGroups, const std::vector<Transform> &transforms)
-    -> void {
+auto ember::RenderEngine::render(const Node *pScene) -> void {
   glClear(GL_COLOR_BUFFER_BIT);
 
-  if (m_drawAxis) {
-    auto axisRenderGroup = getAxisRenderGroup();
+  m_renderHelper(pScene);
+}
 
-    axisRenderGroup.pMaterial->bindProgram();
-    axisRenderGroup.pMesh->bind();
+auto ember::RenderEngine::m_renderHelper(const Node *pNode) -> void {
+  if (pNode->is(NodeAttribute::Renderable)) {
+    auto pRenderable = static_cast<const Renderable *>(pNode);
 
-    auto [width, height] = m_window.getSize();
-    auto mvp = pActiveCamera->getProjectionMatrix(width, height) * pActiveCamera->getViewMatrix();
-    axisRenderGroup.pMaterial->uploadMvp(mvp);
-
-    glDrawElements(GL_LINES, axisRenderGroup.vertexCnt, GL_UNSIGNED_INT,
-                   reinterpret_cast<void *>(axisRenderGroup.byteOffset));
-  }
-
-  for (size_t i = 0; i < renderGroups.size(); i++) {
-    renderGroups[i].pMaterial->bindProgram();
-    renderGroups[i].pMesh->bind();
-    renderGroups[i].pMaterial->uploadUniforms();
+    pRenderable->pMaterial->bindProgram();
+    pRenderable->pMesh->bind();
+    pRenderable->pMaterial->uploadUniforms();
 
     auto [width, height] = m_window.getSize();
     auto mvp =
-        pActiveCamera->getProjectionMatrix(width, height) * pActiveCamera->getViewMatrix() * transforms[i].getMatrix();
-    renderGroups[i].pMaterial->uploadMvp(mvp);
+        pActiveCamera->getProjectionMatrix(width, height) * pActiveCamera->getViewMatrix() * pRenderable->getMatrix();
+    pRenderable->pMaterial->uploadMvp(mvp);
 
-    glDrawElements(GL_TRIANGLES, renderGroups[i].vertexCnt, GL_UNSIGNED_INT,
-                   reinterpret_cast<void *>(renderGroups[i].byteOffset));
+    glDrawElements(GL_TRIANGLES, pRenderable->vertexCnt, GL_UNSIGNED_INT,
+                   reinterpret_cast<void *>(pRenderable->byteOffset));
   }
-  if (m_drawAxis) {
-    auto axisRenderGroup = getAxisRenderGroup();
-    axisRenderGroup.pMaterial->bindProgram();
-    axisRenderGroup.pMesh->bind();
 
-    for (size_t i = 0; i < renderGroups.size(); i++) {
-      auto [width, height] = m_window.getSize();
-      auto mvp = pActiveCamera->getProjectionMatrix(width, height) * pActiveCamera->getViewMatrix() *
-                 transforms[i].getMatrix();
-      axisRenderGroup.pMaterial->uploadMvp(mvp);
-
-      glDrawElements(GL_LINES, axisRenderGroup.vertexCnt, GL_UNSIGNED_INT,
-                     reinterpret_cast<void *>(axisRenderGroup.byteOffset));
-    }
+  for (size_t i = 0; i < pNode->children.size(); i++) {
+    m_renderHelper(pNode->children[i].get());
   }
 }
 

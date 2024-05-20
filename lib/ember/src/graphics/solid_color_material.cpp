@@ -2,12 +2,10 @@
 
 #include <glad/glad.h>
 #include <glm/glm/gtc/type_ptr.hpp>
-#include "../config.hpp"
 #include "../resource_manager/resource_manager.hpp"
-#include "shader_program_loader.hpp"
 
 ember::SolidColorMaterial::SolidColorMaterial()
-    : Material(*getResourceManager().getShaderProgram("solidColor"_id)),
+    : Material(getResourceManager()->getShaderProgram("solidColor"_id)),
       color(1.0f, 0.0f, 0.0f, 1.0f),
       m_colorLocation(glGetUniformLocation(m_shaderProgram.getShaderProgramId(), "u_color")),
       m_mvpLocation(glGetUniformLocation(m_shaderProgram.getShaderProgramId(), "u_mvp")) {}

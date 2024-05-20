@@ -1,7 +1,7 @@
 #include "resource_manager.hpp"
 #include "../config.hpp"
-#include "../graphics/shader_program_loader.hpp"
 #include "../graphics/mesh_loader.hpp"
+#include "../graphics/shader_program_loader.hpp"
 
 ember::ResourceManager::ResourceManager() : m_resourceCache(config::resourceCacheCapacity) {}
 
@@ -10,19 +10,19 @@ auto ember::ResourceManager::getShaderProgram(Identifier idn) -> ShaderProgram *
 
   if (pShaderProgram) return pShaderProgram;
 
-  m_resourceCache.set<ShaderProgram>(idn, shader_program::load(idn, m_resourceMap));
+  m_resourceCache.set<ShaderProgram>(idn, shader_program::load(idn));
   pShaderProgram = m_resourceCache.get<ShaderProgram>(idn);
 
   return pShaderProgram;
 }
 
-auto ember::ResourceManager::getStaticMesh(Identifier idn) -> StaticMesh * {
-  auto pStaticMesh = m_resourceCache.get<StaticMesh>(idn);
+auto ember::ResourceManager::getMesh(Identifier idn) -> Mesh * {
+  auto pMesh = m_resourceCache.get<Mesh>(idn);
 
-  if (pStaticMesh) return pStaticMesh;
+  if (pMesh) return pMesh;
 
-  m_resourceCache.set<StaticMesh>(idn, static_mesh::load(idn, m_resourceMap));
-  pStaticMesh = m_resourceCache.get<StaticMesh>(idn);
+  m_resourceCache.set<Mesh>(idn, mesh::load(idn));
+  pMesh = m_resourceCache.get<Mesh>(idn);
 
-  return pStaticMesh;
+  return pMesh;
 }

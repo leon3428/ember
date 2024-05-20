@@ -2,7 +2,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-
 ember::ObjectController::ObjectController(Transform *transform, Window &window)
     : m_transform(transform),
       m_window(window),

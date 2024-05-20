@@ -1,13 +1,15 @@
-#ifndef TRANSFORM_HPP
-#define TRANSFORM_HPP
+#ifndef OBJECT_3D_HPP
+#define OBJECT_3D_HPP
 
 #include <glm/glm.hpp>
+#include "node.hpp"
 
 namespace ember {
 
-struct Transform {
-
-  Transform();
+class Object3d : public Node {
+ public:
+  Object3d();
+  virtual ~Object3d() = default;
 
   [[nodiscard]] auto getMatrix() const -> glm::mat4;
   [[nodiscard]] auto getInverse() const -> glm::mat4;
@@ -19,4 +21,4 @@ struct Transform {
 
 }  // namespace ember
 
-#endif  // TRANSFORM_HPP
+#endif  // OBJECT_3D_HPP

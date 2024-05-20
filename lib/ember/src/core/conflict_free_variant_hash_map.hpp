@@ -10,10 +10,17 @@ namespace ember {
 template <std::unsigned_integral Key, typename... Types>
 class ConflictFreeVariantHashMap {
  public:
-  ConflictFreeVariantHashMap(size_t capacity) : m_capacity(capacity), m_memory(std::make_unique<SlotType[]>(capacity)) {}
+  ConflictFreeVariantHashMap(size_t capacity)
+      : m_capacity(capacity), m_memory(std::make_unique<SlotType[]>(capacity)) {}
 
   template <typename T>
   [[nodiscard]] auto get(Key key) -> T * {
+    auto ind = key % m_capacity;
+    return std::get_if<T>(&m_memory[ind]);
+  }
+
+  template <typename T>
+  [[nodiscard]] auto get(Key key) const -> const T * {
     auto ind = key % m_capacity;
     return std::get_if<T>(&m_memory[ind]);
   }
@@ -36,8 +43,7 @@ class ConflictFreeVariantHashMap {
   }
 
   auto clear() -> void {
-    for(size_t i = 0;i < m_capacity;i++)
-      m_memory[i] = Empty();
+    for (size_t i = 0; i < m_capacity; i++) m_memory[i] = Empty();
   }
 
  private:

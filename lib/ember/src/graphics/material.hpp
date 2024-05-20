@@ -13,7 +13,7 @@ class Material {
   virtual inline auto uploadMvp(const glm::mat4 &) const -> void{};
 
  protected:
-  Material(const ShaderProgram &shaderProgram);
+  Material(const ShaderProgram *shaderProgram);
 
   Material(const Material &) = default;
   auto operator=(const Material &) -> Material & = delete;
