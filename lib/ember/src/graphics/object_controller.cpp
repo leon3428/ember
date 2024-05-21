@@ -1,9 +1,10 @@
 #include "object_controller.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include "glm/ext/quaternion_trigonometric.hpp"
 
-ember::ObjectController::ObjectController(Transform *transform, Window &window)
-    : m_transform(transform),
+ember::ObjectController::ObjectController(Object3d *pObject, Window &window)
+    : m_pObject(pObject),
       m_window(window),
       m_moveSensitivity(0.01),
       m_rotateSensitivity(0.001),
@@ -13,49 +14,55 @@ auto ember::ObjectController::update(float deltaTime) -> void {
   if (m_window.isKeyPressed(KeyCode::KeyKpEnter)) {
     // rotate
     if (m_window.isKeyPressed(KeyCode::KeyKp8)) {
-      m_transform->rotation = glm::rotate(m_transform->rotation, m_rotateSensitivity * deltaTime, {1.0f, 0.0f, 0.0f});
+      auto q = glm::angleAxis(m_rotateSensitivity * deltaTime, xAxis);
+      m_pObject->rotation *= q;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp2)) {
-      m_transform->rotation = glm::rotate(m_transform->rotation, -m_rotateSensitivity * deltaTime, {1.0f, 0.0f, 0.0f});
+      auto q = glm::angleAxis(-m_rotateSensitivity * deltaTime, xAxis);
+      m_pObject->rotation *= q;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp4)) {
-      m_transform->rotation = glm::rotate(m_transform->rotation, m_rotateSensitivity * deltaTime, {0.0f, 1.0f, 0.0f});
+      auto q = glm::angleAxis(m_rotateSensitivity * deltaTime, yAxis);
+      m_pObject->rotation *= q;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp6)) {
-      m_transform->rotation = glm::rotate(m_transform->rotation, -m_rotateSensitivity * deltaTime, {0.0f, 1.0f, 0.0f});
+      auto q = glm::angleAxis(-m_rotateSensitivity * deltaTime, yAxis);
+      m_pObject->rotation *= q;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp1)) {
-      m_transform->rotation = glm::rotate(m_transform->rotation, m_rotateSensitivity * deltaTime, {0.0f, 0.0f, 1.0f});
+      auto q = glm::angleAxis(m_rotateSensitivity * deltaTime, zAxis);
+      m_pObject->rotation *= q;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp7)) {
-      m_transform->rotation = glm::rotate(m_transform->rotation, -m_rotateSensitivity * deltaTime, {0.0f, 0.0f, 1.0f});
+      auto q = glm::angleAxis(-m_rotateSensitivity * deltaTime, zAxis);
+      m_pObject->rotation *= q;
     }
 
   } else {
     // translate
-    if (m_window.isKeyPressed(KeyCode::KeyKp8)) {
-      m_transform->position.z -= m_moveSensitivity * deltaTime;
-    }
     if (m_window.isKeyPressed(KeyCode::KeyKp2)) {
-      m_transform->position.z += m_moveSensitivity * deltaTime;
+      m_pObject->position.z -= m_moveSensitivity * deltaTime;
+    }
+    if (m_window.isKeyPressed(KeyCode::KeyKp8)) {
+      m_pObject->position.z += m_moveSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp4)) {
-      m_transform->position.x -= m_moveSensitivity * deltaTime;
+      m_pObject->position.x -= m_moveSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp6)) {
-      m_transform->position.x += m_moveSensitivity * deltaTime;
-    }
-    if (m_window.isKeyPressed(KeyCode::KeyKp1)) {
-      m_transform->position.y -= m_moveSensitivity * deltaTime;
+      m_pObject->position.x += m_moveSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp7)) {
-      m_transform->position.y += m_moveSensitivity * deltaTime;
+      m_pObject->position.y -= m_moveSensitivity * deltaTime;
+    }
+    if (m_window.isKeyPressed(KeyCode::KeyKp1)) {
+      m_pObject->position.y += m_moveSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKpSubtract)) {
-      m_transform->scale -= m_scaleSensitivity * deltaTime;
+      m_pObject->scale -= m_scaleSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKpAdd)) {
-      m_transform->scale += m_scaleSensitivity * deltaTime;
+      m_pObject->scale += m_scaleSensitivity * deltaTime;
     }
   }
 }

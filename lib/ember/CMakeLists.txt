@@ -30,7 +30,7 @@ set(PROJECT_HEADERS
     src/graphics/perspective_camera.hpp
     src/graphics/fps_camera_controller.hpp
     src/graphics/mesh_loader.hpp
-    # src/graphics/object_controller.hpp
+    src/graphics/object_controller.hpp
 
     src/resource_manager/resource_descriptions.hpp
     src/resource_manager/resource_manager.hpp
@@ -63,7 +63,7 @@ set(PROJECT_SOURCES
     src/graphics/perspective_camera.cpp
     src/graphics/fps_camera_controller.cpp
     src/graphics/mesh_loader.cpp
-    # src/graphics/object_controller.cpp
+    src/graphics/object_controller.cpp
 
     src/resource_manager/resource_descriptions.cpp
     src/resource_manager/resource_manager.cpp

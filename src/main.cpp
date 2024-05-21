@@ -34,6 +34,7 @@ int main(int, char *argv[]) {
     scene.children.push_back(std::make_unique<ember::Renderable>());
 
     auto pHead = static_cast<ember::Renderable *>(scene.children[0].get());
+    ember::ObjectController objController(pHead, window);
 
     ember::ProjectionSpaceCullingMaterial material1;
     pHead->pMaterial = &material1;
@@ -64,6 +65,7 @@ int main(int, char *argv[]) {
       auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(time - prevTime).count() / 1000.0f;
       prevTime = time;
 
+      objController.update(deltaTime);
       cameraController.update(deltaTime);
       renderEngine.render(&scene);
 

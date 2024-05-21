@@ -1,20 +1,20 @@
 #ifndef OBJECT_CONTROLLER_HPP
 #define OBJECT_CONTROLLER_HPP
 
-#include "../core/transform.hpp"
 #include "../core/window.hpp"
+#include "object3d.hpp"
 
 namespace ember {
 
 class ObjectController {
  public:
-  ObjectController(Transform *transform, Window &window);
+  ObjectController(Object3d *pObject, Window &window);
 
   auto update(float deltaTime) -> void;
-  inline auto bindTransform(Transform *transform) -> void { m_transform = transform; }
+  inline auto bindTransform(Object3d *pObject) -> void { m_pObject = pObject; }
 
  private:
-  Transform *m_transform;
+  Object3d *m_pObject;
   Window &m_window;
 
   float m_moveSensitivity;
