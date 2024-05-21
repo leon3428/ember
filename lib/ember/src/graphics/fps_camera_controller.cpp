@@ -17,22 +17,22 @@ auto ember::FpsCameraController::update(float deltaTime) -> void {
   auto forward = glm::vec3(rotMat[0][2], rotMat[1][2], rotMat[2][2]);  // Third column
 
   if (m_window.isKeyPressed(KeyCode::KeyW)) {
-    m_camera->position += (m_moveSpeed * deltaTime) * forward;
-  }
-  if (m_window.isKeyPressed(KeyCode::KeyS)) {
     m_camera->position -= (m_moveSpeed * deltaTime) * forward;
   }
-  if (m_window.isKeyPressed(KeyCode::KeyA)) {
-    m_camera->position += (m_moveSpeed * deltaTime) * right;
+  if (m_window.isKeyPressed(KeyCode::KeyS)) {
+    m_camera->position += (m_moveSpeed * deltaTime) * forward;
   }
-  if (m_window.isKeyPressed(KeyCode::KeyD)) {
+  if (m_window.isKeyPressed(KeyCode::KeyA)) {
     m_camera->position -= (m_moveSpeed * deltaTime) * right;
   }
+  if (m_window.isKeyPressed(KeyCode::KeyD)) {
+    m_camera->position += (m_moveSpeed * deltaTime) * right;
+  }
   if (m_window.isKeyPressed(KeyCode::KeyLeftShift)) {
-    m_camera->position += (m_moveSpeed * deltaTime) * yAxis;
+    m_camera->position -= (m_moveSpeed * deltaTime) * yAxis;
   }
   if (m_window.isKeyPressed(KeyCode::KeyLeftControl)) {
-    m_camera->position -= (m_moveSpeed * deltaTime) * yAxis;
+    m_camera->position += (m_moveSpeed * deltaTime) * yAxis;
   }
 
   if (m_window.isMouseButtonPressed(ember::MouseButtonCode::MouseButtonRight)) {

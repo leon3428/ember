@@ -1,4 +1,5 @@
 #include "shader_program_loader.hpp"
+#include <GL/glext.h>
 #include <stdexcept>
 
 #include "../config.hpp"
@@ -26,6 +27,29 @@ auto ember::shader_program::load(Identifier idn) -> ember::ShaderProgram {
     // clang-format on
 
     return {vertexColorShaders};
+  }
+  if (idn == "projectionSpaceCulling"_id) {
+    // clang-format off
+    Shader shaders[] = {
+      makeShaderFromFile(GL_VERTEX_SHADER, shaderFolder + "/projectionSpaceCullingShader.vert"),
+      makeShaderFromFile(GL_GEOMETRY_SHADER, shaderFolder + "/projectionSpaceCullingShader.geom"),
+      makeShaderFromFile(GL_FRAGMENT_SHADER, shaderFolder + "/solidColorShader.frag")
+    };
+    // clang-format on
+
+    return {shaders};
+  }
+
+  if (idn == "sceneSpaceCulling"_id) {
+    // clang-format off
+    Shader shaders[] = {
+      makeShaderFromFile(GL_VERTEX_SHADER, shaderFolder + "/sceneSpaceCulling.vert"),
+      makeShaderFromFile(GL_GEOMETRY_SHADER, shaderFolder + "/sceneSpaceCulling.geom"),
+      makeShaderFromFile(GL_FRAGMENT_SHADER, shaderFolder + "/solidColorShader.frag")
+    };
+    // clang-format on
+
+    return {shaders};
   }
 
   throw std::runtime_error("Invalid shader program identifier");

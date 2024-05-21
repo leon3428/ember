@@ -11,5 +11,5 @@ auto ember::PerspectiveCamera::getProjectionMatrix(int width, int height) const 
 }
 
 auto ember::PerspectiveCamera::getViewMatrix() const -> glm::mat4 {
-  return glm::translate(glm::mat4_cast(rotation), position);
+  return glm::translate(glm::mat4_cast(rotation), -position);
 }

@@ -135,9 +135,8 @@ auto ember::RenderEngine::m_renderHelper(const Node *pNode) -> void {
     pRenderable->pMaterial->uploadUniforms();
 
     auto [width, height] = m_window.getSize();
-    auto mvp =
-        pActiveCamera->getProjectionMatrix(width, height) * pActiveCamera->getViewMatrix() * pRenderable->getMatrix();
-    pRenderable->pMaterial->uploadMvp(mvp);
+    pRenderable->pMaterial->uploadMvp(pRenderable->getMatrix(), pActiveCamera->getViewMatrix(),
+                                      pActiveCamera->getProjectionMatrix(width, height));
 
     glDrawElements(GL_TRIANGLES, pRenderable->vertexCnt, GL_UNSIGNED_INT,
                    reinterpret_cast<void *>(pRenderable->byteOffset));

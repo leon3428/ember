@@ -1,13 +1,14 @@
-#ifndef SOLID_COLOR_MATERIAL_HPP
-#define SOLID_COLOR_MATERIAL_HPP
+#ifndef SCENE_SPACE_CULLING_MATERIAL
+#define SCENE_SPACE_CULLING_MATERIAL
 
 #include <glm/glm.hpp>
 #include "material.hpp"
 
 namespace ember {
-class SolidColorMaterial : public Material {
+
+class SceneSpaceCullingMaterial : public Material {
  public:
-  SolidColorMaterial();
+  SceneSpaceCullingMaterial();
 
   glm::vec4 color;
 
@@ -16,8 +17,10 @@ class SolidColorMaterial : public Material {
 
  private:
   int m_colorLocation;
-  int m_mvpLocation;
+  int m_mvLocation;
+  int m_pLocation;
 };
+
 }  // namespace ember
 
-#endif  // SOLID_COLOR_MATERIAL_HPP
+#endif // SCENE_SPACE_CULLING_MATERIAL

@@ -10,7 +10,7 @@ class Material {
  public:
   inline auto bindProgram() const -> void { m_shaderProgram.bind(); }
   virtual inline auto uploadUniforms() const -> void{};
-  virtual inline auto uploadMvp(const glm::mat4 &) const -> void{};
+  virtual inline auto uploadMvp(const glm::mat4 &, const glm::mat4 &, const glm::mat4 &) const -> void{};
 
  protected:
   Material(const ShaderProgram *shaderProgram);

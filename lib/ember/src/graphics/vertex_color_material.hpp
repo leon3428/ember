@@ -9,7 +9,7 @@ class VertexColorMaterial : public Material {
  public:
   VertexColorMaterial();
 
-  virtual auto uploadMvp(const glm::mat4 &mvp) const -> void override;
+  virtual auto uploadMvp(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection)const -> void override;
 
  private:
   int m_mvpLocation;

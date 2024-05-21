@@ -23,6 +23,8 @@ set(PROJECT_HEADERS
     src/graphics/mesh.hpp
     src/graphics/solid_color_material.hpp
     src/graphics/vertex_color_material.hpp
+    src/graphics/projection_space_culling_material.hpp
+    src/graphics/scene_space_culling_material.hpp
     src/graphics/material.hpp
     src/graphics/camera.hpp
     src/graphics/perspective_camera.hpp
@@ -55,6 +57,8 @@ set(PROJECT_SOURCES
     src/graphics/mesh.cpp
     src/graphics/solid_color_material.cpp
     src/graphics/vertex_color_material.cpp
+    src/graphics/projection_space_culling_material.cpp
+    src/graphics/scene_space_culling_material.cpp
     src/graphics/material.cpp
     src/graphics/perspective_camera.cpp
     src/graphics/fps_camera_controller.cpp
