@@ -54,7 +54,7 @@ class VertexArray {
   [[nodiscard]] inline auto isIndexed() const { return m_indexBuffer.has_value(); }
   [[nodiscard]] virtual auto getPrimitiveType() const -> GLenum = 0;
 
- private:
+ protected:
   uint32_t m_VAO;
   VertexBuffer m_vertexBuffer;
   std::optional<IndexBuffer> m_indexBuffer;

@@ -25,6 +25,8 @@ int main(int, char *argv[]) {
     ember::Window window("Ember", width, height);
     ember::RenderEngine renderEngine(window);
 
+    auto &eventBus = window.getEventBus();
+
     ember::PerspectiveCamera camera(glm::radians(45.0f), 0.1f, 100.0f);
     ember::FpsCameraController cameraController(&camera, window);
     camera.position.z = 10;
@@ -42,7 +44,6 @@ int main(int, char *argv[]) {
     pHead->pVertexArray = mesh;
     pHead->vertexCnt = mesh->getNumVertices();
     pHead->byteOffset = 0;
-    pHead->position.x = -2;
 
     scene.children.push_back(std::make_unique<ember::Renderable>());
     auto pObj2 = static_cast<ember::Renderable *>(scene.children[1].get());
@@ -55,23 +56,19 @@ int main(int, char *argv[]) {
     pObj2->byteOffset = 0;
     pObj2->position.x = 2;
 
-    ember::PosVertex line[] = {
-      ember::PosVertex({ 0.0f, 0.0f, 0.0f }),
-      ember::PosVertex({ 1.0f, 0.0f, 0.0f }),
-      ember::PosVertex({ 1.0f, 0.0f, 1.0f })
-    };
+    scene.children.push_back(std::make_unique<ember::BezierCurve>(20));
+    auto pBezierCurve = static_cast<ember::BezierCurve *>(scene.children[2].get());
+    ember::Object3d *pBezierObject = pHead;
 
-    ember::DynamicLineStrip<ember::PosVertex> lineStrip(line);
-    scene.children.push_back(std::make_unique<ember::Renderable>());
-    auto pLineObj = static_cast<ember::Renderable *>(scene.children[2].get());
-    ember::SolidColorMaterial material3;
-    pLineObj->pMaterial = &material3;
-    pLineObj->pVertexArray = &lineStrip;
-    pLineObj->vertexCnt = lineStrip.getNumVertices();
-    pLineObj->byteOffset = 0;
-    pLineObj->position.x = 4;
+    eventBus.subscribe<ember::KeyPressedEvent>([pBezierCurve, pBezierObject](const ember::KeyPressedEvent &e) {
+      if (e.keyCode == ember::KeyCode::KeyTab) {
+        auto pos = pBezierObject->position;
+        pos.x *= -1;
+        pos.y *= -1;
+        pBezierCurve->addPoint(pos, pBezierObject->rotation);
+      }
+    });
 
-    // renderEngine.wireframeMode();
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
     auto prevTime = std::chrono::high_resolution_clock::now();
