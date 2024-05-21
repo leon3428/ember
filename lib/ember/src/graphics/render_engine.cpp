@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <iostream>
 #include "../resource_manager/resource_manager.hpp"
+#include "bezier_curve.hpp"
 #include "node.hpp"
 #include "renderable.hpp"
 
@@ -131,15 +132,19 @@ auto ember::RenderEngine::m_renderHelper(const Node *pNode) -> void {
     auto pRenderable = static_cast<const Renderable *>(pNode);
 
     pRenderable->pMaterial->bindProgram();
-    pRenderable->pMesh->bind();
+    pRenderable->pVertexArray->bind();
     pRenderable->pMaterial->uploadUniforms();
 
     auto [width, height] = m_window.getSize();
-    pRenderable->pMaterial->uploadMvp(pRenderable->getMatrix(), pActiveCamera->getViewMatrix(),
-                                      pActiveCamera->getProjectionMatrix(width, height));
+    pRenderable->pMaterial->uploadMvp(pRenderable->getMatrix(), m_pCamera->getViewMatrix(),
+                                      m_pCamera->getProjectionMatrix(width, height));
 
-    glDrawElements(GL_TRIANGLES, pRenderable->vertexCnt, GL_UNSIGNED_INT,
-                   reinterpret_cast<void *>(pRenderable->byteOffset));
+    if (pRenderable->pVertexArray->isIndexed()) {
+      glDrawElements(pRenderable->pVertexArray->getPrimitiveType(), pRenderable->vertexCnt, GL_UNSIGNED_INT,
+                     reinterpret_cast<void *>(pRenderable->byteOffset));
+    } else {
+      glDrawArrays(pRenderable->pVertexArray->getPrimitiveType(), 0, pRenderable->vertexCnt);
+    }
   }
 
   for (size_t i = 0; i < pNode->children.size(); i++) {

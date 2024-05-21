@@ -16,15 +16,16 @@ class RenderEngine {
   auto wireframeMode() -> void;
 
   inline auto drawAxis() -> void { m_drawAxis = true; }
-
-  // TODO: remove this
-  Camera *pActiveCamera;
+  inline auto setCamera(Camera *pCamera) { m_pCamera = pCamera; }
+  inline auto setDebugMode(bool debug) { m_debugMode = debug; }
 
  private:
   auto m_renderHelper(const Node *pNode) -> void;
 
   Window &m_window;
+  Camera *m_pCamera;
   bool m_drawAxis;
+  bool m_debugMode;
 };
 }  // namespace ember
 

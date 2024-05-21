@@ -14,6 +14,7 @@
 #include "../src/graphics/scene_space_culling_material.hpp"
 #include "../src/graphics/fps_camera_controller.hpp"
 #include "../src/graphics/object_controller.hpp"
+#include "../src/graphics/dynamic_line_strip.hpp"
 
 #include "../src/graphics/node.hpp"
 #include "../src/graphics/object3d.hpp"

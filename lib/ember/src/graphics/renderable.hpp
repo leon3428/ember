@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 
 #include "material.hpp"
-#include "mesh.hpp"
+#include "vertex_array.hpp"
 #include "object3d.hpp"
 
 namespace ember {
@@ -16,7 +16,7 @@ class Renderable : public Object3d {
   Renderable();
 
   Material *pMaterial;
-  Mesh *pMesh;
+  VertexArray *pVertexArray;
   size_t vertexCnt;
   size_t byteOffset;
 };

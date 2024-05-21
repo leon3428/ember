@@ -8,7 +8,8 @@ namespace ember {
 enum class NodeAttribute : unsigned { 
   Object3d = 1, 
   Renderable = (1 << 1),
-  Camera = (1 << 2)  
+  Camera = (1 << 2),
+  Bezier = (1 << 3)
 };
 
 class Node {

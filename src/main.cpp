@@ -28,7 +28,7 @@ int main(int, char *argv[]) {
     ember::PerspectiveCamera camera(glm::radians(45.0f), 0.1f, 100.0f);
     ember::FpsCameraController cameraController(&camera, window);
     camera.position.z = 10;
-    renderEngine.pActiveCamera = &camera;
+    renderEngine.setCamera(&camera);
 
     auto scene = ember::Node();
     scene.children.push_back(std::make_unique<ember::Renderable>());
@@ -39,7 +39,7 @@ int main(int, char *argv[]) {
     ember::ProjectionSpaceCullingMaterial material1;
     pHead->pMaterial = &material1;
     auto mesh = resourceManager->getMesh("headMesh"_id);
-    pHead->pMesh = mesh;
+    pHead->pVertexArray = mesh;
     pHead->vertexCnt = mesh->getNumVertices();
     pHead->byteOffset = 0;
     pHead->position.x = -2;
@@ -50,10 +50,26 @@ int main(int, char *argv[]) {
     ember::SceneSpaceCullingMaterial material2;
     material2.color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
     pObj2->pMaterial = &material2;
-    pObj2->pMesh = mesh;
+    pObj2->pVertexArray = mesh;
     pObj2->vertexCnt = mesh->getNumVertices();
     pObj2->byteOffset = 0;
     pObj2->position.x = 2;
+
+    ember::PosVertex line[] = {
+      ember::PosVertex({ 0.0f, 0.0f, 0.0f }),
+      ember::PosVertex({ 1.0f, 0.0f, 0.0f }),
+      ember::PosVertex({ 1.0f, 0.0f, 1.0f })
+    };
+
+    ember::DynamicLineStrip<ember::PosVertex> lineStrip(line);
+    scene.children.push_back(std::make_unique<ember::Renderable>());
+    auto pLineObj = static_cast<ember::Renderable *>(scene.children[2].get());
+    ember::SolidColorMaterial material3;
+    pLineObj->pMaterial = &material3;
+    pLineObj->pVertexArray = &lineStrip;
+    pLineObj->vertexCnt = lineStrip.getNumVertices();
+    pLineObj->byteOffset = 0;
+    pLineObj->position.x = 4;
 
     // renderEngine.wireframeMode();
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

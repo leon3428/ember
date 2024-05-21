@@ -20,7 +20,13 @@ set(PROJECT_HEADERS
     src/graphics/shader.hpp
     src/graphics/vertex_types.hpp
 
+    src/graphics/bezier_curve.hpp
+
+    src/graphics/vertex_buffer.hpp
+    src/graphics/vertex_array.hpp
+    src/graphics/index_buffer.hpp
     src/graphics/mesh.hpp
+    src/graphics/dynamic_line_strip.hpp
     src/graphics/solid_color_material.hpp
     src/graphics/vertex_color_material.hpp
     src/graphics/projection_space_culling_material.hpp
@@ -54,6 +60,11 @@ set(PROJECT_SOURCES
     src/graphics/shader.cpp
     src/graphics/vertex_types.cpp
 
+    src/graphics/bezier_curve.cpp
+
+    src/graphics/vertex_buffer.cpp
+    src/graphics/vertex_array.cpp
+    src/graphics/index_buffer.cpp
     src/graphics/mesh.cpp
     src/graphics/solid_color_material.cpp
     src/graphics/vertex_color_material.cpp

@@ -13,7 +13,6 @@ auto ember::FpsCameraController::update(float deltaTime) -> void {
 
   auto rotMat = glm::mat4_cast(m_camera->rotation);
   auto right = glm::vec3(rotMat[0][0], rotMat[1][0], rotMat[2][0]);    // First column
-  auto up = glm::vec3(rotMat[0][1], rotMat[1][1], rotMat[2][1]);       // Second column
   auto forward = glm::vec3(rotMat[0][2], rotMat[1][2], rotMat[2][2]);  // Third column
 
   if (m_window.isKeyPressed(KeyCode::KeyW)) {
@@ -35,7 +34,7 @@ auto ember::FpsCameraController::update(float deltaTime) -> void {
     m_camera->position += (m_moveSpeed * deltaTime) * yAxis;
   }
 
-  if (m_window.isMouseButtonPressed(ember::MouseButtonCode::MouseButtonRight)) {
+  if (m_window.isMouseButtonPressed(ember::MouseButtonCode::MouseButtonLeft)) {
     float xAngle = (mouseX - m_lastMouseX) * -m_turnSpeed * deltaTime;
     float yAngle = (mouseY - m_lastMouseY) * m_turnSpeed * deltaTime;
 
