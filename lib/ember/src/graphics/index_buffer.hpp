@@ -4,7 +4,6 @@
 #include <glad/glad.h>
 #include <stdint.h>
 #include <span>
-#include "vertex_types.hpp"
 
 namespace ember {
 

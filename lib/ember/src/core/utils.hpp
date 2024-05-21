@@ -36,6 +36,8 @@ inline constexpr glm::vec3 xAxis(1.0f, 0.0f, 0.0f);
 inline constexpr glm::vec3 yAxis(0.0f, 1.0f, 0.0f);
 inline constexpr glm::vec3 zAxis(0.0f, 0.0f, 1.0f);
 
+uint64_t binomialCoefficient(int n, int k);
+
 }  // namespace ember
 
 inline constexpr ember::Identifier operator""_id(const char *str, size_t) { return ember::hash(str); }

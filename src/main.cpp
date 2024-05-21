@@ -56,18 +56,24 @@ int main(int, char *argv[]) {
     pObj2->byteOffset = 0;
     pObj2->position.x = 2;
 
-    scene.children.push_back(std::make_unique<ember::BezierCurve>(20));
+    scene.children.push_back(std::make_unique<ember::BezierCurve>(20, 20));
     auto pBezierCurve = static_cast<ember::BezierCurve *>(scene.children[2].get());
     ember::Object3d *pBezierObject = pHead;
+    bool animationPlaying = false;
+    float t = 0.0f;
 
-    eventBus.subscribe<ember::KeyPressedEvent>([pBezierCurve, pBezierObject](const ember::KeyPressedEvent &e) {
-      if (e.keyCode == ember::KeyCode::KeyTab) {
-        auto pos = pBezierObject->position;
-        pos.x *= -1;
-        pos.y *= -1;
-        pBezierCurve->addPoint(pos, pBezierObject->rotation);
-      }
-    });
+    eventBus.subscribe<ember::KeyPressedEvent>(
+        [pBezierCurve, pBezierObject, &animationPlaying, &t](const ember::KeyPressedEvent &e) {
+          if (e.keyCode == ember::KeyCode::KeyTab) {
+            auto pos = pBezierObject->position;
+            pos.x *= -1;
+            pos.y *= -1;
+            pBezierCurve->addPoint(pos, pBezierObject->rotation);
+          } else if (e.keyCode == ember::KeyCode::KeySpace) {
+            animationPlaying = true;
+            t = 0.0f;
+          }
+        });
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -77,6 +83,18 @@ int main(int, char *argv[]) {
       auto time = std::chrono::high_resolution_clock::now();
       auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(time - prevTime).count() / 1000.0f;
       prevTime = time;
+
+      if (animationPlaying) {
+        t += 0.0001 * deltaTime;
+        if (t > 1.0f) {
+          t = 1.0f;
+          animationPlaying = false;
+        }
+
+        pBezierObject->position = pBezierCurve->getPosition(t);
+        pBezierObject->position.x *= -1;
+        pBezierObject->position.y *= -1;
+      }
 
       objController.update(deltaTime);
       cameraController.update(deltaTime);

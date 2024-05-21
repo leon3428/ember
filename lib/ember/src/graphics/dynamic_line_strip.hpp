@@ -13,9 +13,13 @@ class DynamicLineStrip : public VertexArray {
 
   auto writeVertex(size_t i, const T &vertex) -> void {
     m_vertexBuffer.bind();
-
-    // potential alignment issues
     glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(T), sizeof(T), &vertex);
+    m_vertexBuffer.unbind();
+  }
+
+  auto writeVertices(size_t i, std::span<T> vertices) {
+    m_vertexBuffer.bind();
+    glBufferSubData(GL_ARRAY_BUFFER, i * sizeof(T), vertices.size_bytes(), vertices.data());
     m_vertexBuffer.unbind();
   }
 
