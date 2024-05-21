@@ -1,7 +1,6 @@
 #include "shader_program.hpp"
 
 #include <glad/glad.h>
-#include <exception>
 #include <format>
 
 ember::ShaderProgram::ShaderProgram(std::span<Shader> shaders) : m_shaderProgramId(glCreateProgram()) {

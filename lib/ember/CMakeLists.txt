@@ -26,7 +26,7 @@ set(PROJECT_HEADERS
     src/graphics/material.hpp
     src/graphics/camera.hpp
     src/graphics/perspective_camera.hpp
-    # src/graphics/fps_camera_controller.hpp
+    src/graphics/fps_camera_controller.hpp
     src/graphics/mesh_loader.hpp
     # src/graphics/object_controller.hpp
 
@@ -43,6 +43,7 @@ set(PROJECT_SOURCES
     src/graphics/node.cpp
     src/graphics/object3d.cpp
     src/graphics/renderable.cpp
+    src/graphics/camera.cpp
 
     src/graphics/render_engine.cpp
 
@@ -56,7 +57,7 @@ set(PROJECT_SOURCES
     src/graphics/vertex_color_material.cpp
     src/graphics/material.cpp
     src/graphics/perspective_camera.cpp
-    # src/graphics/fps_camera_controller.cpp
+    src/graphics/fps_camera_controller.cpp
     src/graphics/mesh_loader.cpp
     # src/graphics/object_controller.cpp
 

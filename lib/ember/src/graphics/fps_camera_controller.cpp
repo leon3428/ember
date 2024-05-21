@@ -1,50 +1,47 @@
 #include "fps_camera_controller.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include "../core/utils.hpp"
+#include "glm/ext/quaternion_trigonometric.hpp"
+#include "glm/gtc/quaternion.hpp"
 
-ember::FpsCameraController::FpsCameraController(PerspectiveCamera &camera, Window &window)
-    : m_camera(camera),
-      m_window(window),
-      m_yaw(-glm::pi<float>() / 2.0f),
-      m_pitch(0),
-      m_lastMouseX(0),
-      m_lastMouseY(0) {}
+ember::FpsCameraController::FpsCameraController(Camera *camera, Window &window)
+    : m_camera(camera), m_window(window), m_moveSpeed(0.01f), m_turnSpeed(0.0001f), m_lastMouseX(0), m_lastMouseY(0) {}
 
 auto ember::FpsCameraController::update(float deltaTime) -> void {
-  if (m_window.isKeyPressed(KeyCode::KeyW)) {
-    m_camera.pos += (0.01f * deltaTime) * m_camera.direction;
-  }
-  if (m_window.isKeyPressed(KeyCode::KeyS)) {
-    m_camera.pos -= (0.01f * deltaTime) * m_camera.direction;
-  }
-  if (m_window.isKeyPressed(KeyCode::KeyD)) {
-    m_camera.pos += (0.01f * deltaTime) * glm::normalize(glm::cross(m_camera.direction, m_camera.up));
-  }
-  if (m_window.isKeyPressed(KeyCode::KeyA)) {
-    m_camera.pos -= (0.01f * deltaTime) * glm::normalize(glm::cross(m_camera.direction, m_camera.up));
-  }
-  if (m_window.isKeyPressed(KeyCode::KeyLeftControl)) {
-    auto right = glm::cross(m_camera.direction, m_camera.up);
-    m_camera.pos += (0.01f * deltaTime) * glm::normalize(glm::cross(m_camera.direction, right));
-  }
-  if (m_window.isKeyPressed(KeyCode::KeyLeftShift)) {
-    auto right = glm::cross(m_camera.direction, m_camera.up);
-    m_camera.pos -= (0.01f * deltaTime) * glm::normalize(glm::cross(m_camera.direction, right));
-  }
-
   auto [mouseX, mouseY] = m_window.getMousePos();
 
-  if (m_window.isMouseButtonPressed(MouseButtonCode::MouseButtonLeft)) {
-    auto deltaX = mouseX - m_lastMouseX;
-    auto deltaY = mouseY - m_lastMouseY;
+  auto rotMat = glm::mat4_cast(m_camera->rotation);
+  auto right = glm::vec3(rotMat[0][0], rotMat[1][0], rotMat[2][0]);    // First column
+  auto up = glm::vec3(rotMat[0][1], rotMat[1][1], rotMat[2][1]);       // Second column
+  auto forward = glm::vec3(rotMat[0][2], rotMat[1][2], rotMat[2][2]);  // Third column
 
-    m_yaw += 0.0001f * deltaTime * deltaX;
-    m_pitch -= 0.0001f * deltaTime * deltaY;
+  if (m_window.isKeyPressed(KeyCode::KeyW)) {
+    m_camera->position += (m_moveSpeed * deltaTime) * forward;
+  }
+  if (m_window.isKeyPressed(KeyCode::KeyS)) {
+    m_camera->position -= (m_moveSpeed * deltaTime) * forward;
+  }
+  if (m_window.isKeyPressed(KeyCode::KeyA)) {
+    m_camera->position += (m_moveSpeed * deltaTime) * right;
+  }
+  if (m_window.isKeyPressed(KeyCode::KeyD)) {
+    m_camera->position -= (m_moveSpeed * deltaTime) * right;
+  }
+  if (m_window.isKeyPressed(KeyCode::KeyLeftShift)) {
+    m_camera->position += (m_moveSpeed * deltaTime) * yAxis;
+  }
+  if (m_window.isKeyPressed(KeyCode::KeyLeftControl)) {
+    m_camera->position -= (m_moveSpeed * deltaTime) * yAxis;
+  }
 
-    m_camera.direction.x = cos(m_yaw) * cos(m_pitch);
-    m_camera.direction.y = sin(m_pitch);
-    m_camera.direction.z = sin(m_yaw) * cos(m_pitch);
-    m_camera.direction = glm::normalize(m_camera.direction);
+  if (m_window.isMouseButtonPressed(ember::MouseButtonCode::MouseButtonRight)) {
+    float xAngle = (mouseX - m_lastMouseX) * -m_turnSpeed * deltaTime;
+    float yAngle = (mouseY - m_lastMouseY) * m_turnSpeed * deltaTime;
+
+    auto q1 = glm::angleAxis(xAngle, yAxis);
+    auto q2 = glm::angleAxis(yAngle, xAxis);
+    m_camera->rotation = q2 * m_camera->rotation * q1;
   }
 
   m_lastMouseX = mouseX;

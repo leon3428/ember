@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <optional>
 #include <string>
+#include <glm/glm.hpp>
 
 namespace ember {
 std::optional<std::string> readFile(std::filesystem::path path);
@@ -30,6 +31,11 @@ constexpr Identifier hash(const char *str) {
 
   return {hash};
 }
+
+inline constexpr glm::vec3 xAxis(1.0f, 0.0f, 0.0f);
+inline constexpr glm::vec3 yAxis(0.0f, 1.0f, 0.0f);
+inline constexpr glm::vec3 zAxis(0.0f, 0.0f, 1.0f);
+
 }  // namespace ember
 
 inline constexpr ember::Identifier operator""_id(const char *str, size_t) { return ember::hash(str); }

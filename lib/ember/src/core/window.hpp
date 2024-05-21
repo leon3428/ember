@@ -2,7 +2,6 @@
 #define WINDOW_HPP
 
 #include <GLFW/glfw3.h>
-#include <functional>
 #include <string_view>
 #include "event_bus.hpp"
 #include "key_codes.hpp"
@@ -27,6 +26,8 @@ struct ResizeEvent {
   int width;
   int height;
 };
+
+auto scrollCallback(GLFWwindow *window, double, double yOffset) -> void;
 
 class Window {
  public:
@@ -54,11 +55,19 @@ class Window {
   [[nodiscard]] auto isMouseButtonPressed(MouseButtonCode mouseButtonCode) const -> bool;
   [[nodiscard]] auto getMousePos() const -> std::tuple<float, float>;
   [[nodiscard]] auto getSize() const -> std::tuple<int, int>;
+  [[nodiscard]] inline auto getScrollDist() const { return m_scrollDist; }
+
+
+  friend auto scrollCallback(GLFWwindow *, double, double) -> void;
 
  private:
+  unsigned m_scrollDist;
+
   GLFWwindow *m_pWindow;
   EventBus m_eventBus;
 };
+
+
 }  // namespace ember
 
 #endif  // WINDOW_HPP

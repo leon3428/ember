@@ -26,7 +26,8 @@ int main(int, char *argv[]) {
     ember::RenderEngine renderEngine(window);
 
     ember::PerspectiveCamera camera(glm::radians(45.0f), 0.1f, 100.0f);
-    camera.pos.z = 10;
+    ember::FpsCameraController cameraController(&camera, window);
+    camera.position.z = -10;
     renderEngine.pActiveCamera = &camera;
 
     auto scene = ember::Node();
@@ -45,7 +46,14 @@ int main(int, char *argv[]) {
     renderEngine.wireframeMode();
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
+    auto prevTime = std::chrono::high_resolution_clock::now();
+
     while (!window.shouldClose()) {
+      auto time = std::chrono::high_resolution_clock::now();
+      auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(time - prevTime).count() / 1000.0f;
+      prevTime = time;
+
+      cameraController.update(deltaTime);
       renderEngine.render(&scene);
 
       window.update();

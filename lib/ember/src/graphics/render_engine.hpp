@@ -18,7 +18,7 @@ class RenderEngine {
   inline auto drawAxis() -> void { m_drawAxis = true; }
 
   // TODO: remove this
-  ICamera *pActiveCamera;
+  Camera *pActiveCamera;
 
  private:
   auto m_renderHelper(const Node *pNode) -> void;

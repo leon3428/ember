@@ -4,24 +4,31 @@
 
 auto keyCallback(GLFWwindow *window, int key, int, int action, int mods) -> void {
   if (action == GLFW_PRESS) {
-    auto pEventBus = static_cast<ember::EventBus *>(glfwGetWindowUserPointer(window));
-
-    pEventBus->fire<ember::KeyPressedEvent>({static_cast<ember::KeyCode>(key), mods});
+    auto pSelf = static_cast<ember::Window *>(glfwGetWindowUserPointer(window));
+    auto &eventBus = pSelf->getEventBus();
+    eventBus.fire<ember::KeyPressedEvent>({static_cast<ember::KeyCode>(key), mods});
   }
 }
 
 auto mouseButtonCallback(GLFWwindow *window, int button, int action, int) -> void {
   if (action == GLFW_PRESS) {
-    auto pEventBus = static_cast<ember::EventBus *>(glfwGetWindowUserPointer(window));
+    auto pSelf = static_cast<ember::Window *>(glfwGetWindowUserPointer(window));
+    auto &eventBus = pSelf->getEventBus();
 
-    pEventBus->fire<ember::MouseButtonPressedEvent>({static_cast<ember::MouseButtonCode>(button)});
+    eventBus.fire<ember::MouseButtonPressedEvent>({static_cast<ember::MouseButtonCode>(button)});
   }
 }
 
 auto resizeCallback(GLFWwindow *window, int width, int height) -> void {
-  auto pEventBus = static_cast<ember::EventBus *>(glfwGetWindowUserPointer(window));
+  auto pSelf = static_cast<ember::Window *>(glfwGetWindowUserPointer(window));
+  auto &eventBus = pSelf->getEventBus();
 
-  pEventBus->fire<ember::ResizeEvent>({width, height});
+  eventBus.fire<ember::ResizeEvent>({width, height});
+}
+
+auto ember::scrollCallback(GLFWwindow *window, double, double yOffset) -> void {
+  auto pSelf = static_cast<ember::Window *>(glfwGetWindowUserPointer(window));
+  pSelf->m_scrollDist += static_cast<unsigned>(yOffset);
 }
 
 ember::Window::Window(std::string_view name, int width, int height) {
@@ -43,11 +50,12 @@ ember::Window::Window(std::string_view name, int width, int height) {
   if (m_pWindow == nullptr) throw std::runtime_error("Failed to create the window.");
 
   glfwMakeContextCurrent(m_pWindow);
-  glfwSetWindowUserPointer(m_pWindow, &m_eventBus);
+  glfwSetWindowUserPointer(m_pWindow, this);
 
   glfwSetKeyCallback(m_pWindow, keyCallback);
   glfwSetFramebufferSizeCallback(m_pWindow, resizeCallback);
   glfwSetMouseButtonCallback(m_pWindow, mouseButtonCallback);
+  glfwSetScrollCallback(m_pWindow, scrollCallback);
 }
 
 ember::Window::~Window() {

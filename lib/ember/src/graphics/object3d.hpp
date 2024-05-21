@@ -2,6 +2,7 @@
 #define OBJECT_3D_HPP
 
 #include <glm/glm.hpp>
+#include "glm/gtc/quaternion.hpp"
 #include "node.hpp"
 
 namespace ember {
@@ -16,7 +17,7 @@ class Object3d : public Node {
 
   glm::vec3 position;
   glm::vec3 scale;
-  glm::mat4 rotation;
+  glm::quat rotation;
 };
 
 }  // namespace ember

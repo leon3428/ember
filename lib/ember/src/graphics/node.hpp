@@ -5,7 +5,11 @@
 #include <vector>
 namespace ember {
 
-enum class NodeAttribute : unsigned { Object3d = 1, Renderable = (1 << 1) };
+enum class NodeAttribute : unsigned { 
+  Object3d = 1, 
+  Renderable = (1 << 1),
+  Camera = (1 << 2)  
+};
 
 class Node {
  public:
