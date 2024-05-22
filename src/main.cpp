@@ -13,6 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "ember.hpp"
+#include "glm/ext/quaternion_common.hpp"
 
 int main(int, char *argv[]) {
   std::cout << argv[0] << ' ' << argv[1] << std::endl;
@@ -138,7 +139,7 @@ int main(int, char *argv[]) {
         pBezierObject->position.x *= -1;
         pBezierObject->position.y *= -1;
 
-        pBezierObject->rotation = rotations[i] * (1.0f - lambda) + rotations[i+1] * lambda;
+        pBezierObject->rotation = glm::slerp(rotations[i], rotations[i+1], lambda);
       }
 
       objController.update(deltaTime);
