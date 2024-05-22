@@ -7,8 +7,8 @@
 ember::ProjectionSpaceCullingMaterial::ProjectionSpaceCullingMaterial()
     : Material(getResourceManager()->getShaderProgram("projectionSpaceCulling"_id)),
       color(1.0f, 0.0f, 0.0f, 1.0f),
-      m_colorLocation(glGetUniformLocation(m_shaderProgram.getShaderProgramId(), "u_color")),
-      m_mvpLocation(glGetUniformLocation(m_shaderProgram.getShaderProgramId(), "u_mvp")) {}
+      m_colorLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_color")),
+      m_mvpLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_mvp")) {}
 
 auto ember::ProjectionSpaceCullingMaterial::uploadUniforms() const -> void {
   glUniform4fv(m_colorLocation, 1, &color[0]);

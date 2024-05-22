@@ -7,9 +7,9 @@
 ember::SceneSpaceCullingMaterial::SceneSpaceCullingMaterial()
     : Material(getResourceManager()->getShaderProgram("sceneSpaceCulling"_id)),
       color(1.0f, 0.0f, 0.0f, 1.0f),
-      m_colorLocation(glGetUniformLocation(m_shaderProgram.getShaderProgramId(), "u_color")),
-      m_mvLocation(glGetUniformLocation(m_shaderProgram.getShaderProgramId(), "u_mv")),
-      m_pLocation(glGetUniformLocation(m_shaderProgram.getShaderProgramId(), "u_p")) {}
+      m_colorLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_color")),
+      m_mvLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_mv")),
+      m_pLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_p")) {}
 
 auto ember::SceneSpaceCullingMaterial::uploadUniforms() const -> void {
   glUniform4fv(m_colorLocation, 1, &color[0]);

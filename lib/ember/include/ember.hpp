@@ -17,10 +17,12 @@
 #include "../src/graphics/object_controller.hpp"
 #include "../src/graphics/dynamic_line_strip.hpp"
 #include "../src/graphics/bezier_node.hpp"
+#include "../src/graphics/object_loader.hpp"
 
 #include "../src/graphics/node.hpp"
 #include "../src/graphics/object3d.hpp"
 #include "../src/graphics/renderable.hpp"
+#include "../src/graphics/light.hpp"
 
 #include "../src/resource_manager/resource_index.hpp"
 #include "../src/resource_manager/resource_manager.hpp"

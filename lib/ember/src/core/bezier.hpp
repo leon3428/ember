@@ -15,6 +15,7 @@ class Bezier {
 
   [[nodiscard]] inline auto getControlPoints() const -> const Eigen::MatrixXf & { return m_controlPoints; }
   [[nodiscard]] inline auto getInterpolatedPoints() const -> const Eigen::MatrixXf & { return m_interpolationPoints; }
+  [[nodiscard]] inline auto getPointCount() const -> size_t { return m_controlPoints.rows(); }
 
  private:
   Eigen::MatrixXf m_controlPoints;

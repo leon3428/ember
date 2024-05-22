@@ -2,11 +2,20 @@
 #define RENDER_ENGINE_HPP
 
 #include <glad/glad.h>
+#include <memory>
 #include "../core/window.hpp"
 #include "camera.hpp"
 #include "node.hpp"
+#include "uniform_buffer.hpp"
 
 namespace ember {
+
+struct LightData {
+  glm::vec4 ambientIntensity;
+  glm::vec4 diffuseIntensity;
+  glm::vec4 specularIntensity;
+  glm::vec4 position;
+};
 
 class RenderEngine {
  public:
@@ -26,6 +35,9 @@ class RenderEngine {
   Camera *m_pCamera;
   bool m_drawAxis;
   bool m_debugMode;
+
+  LightData m_lightData;
+  std::unique_ptr<UniformBuffer> m_pLightUniformBuffer;
 };
 }  // namespace ember
 

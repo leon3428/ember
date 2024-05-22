@@ -2,9 +2,13 @@
 
 #include <glad/glad.h>
 #include <iostream>
+#include <memory>
+#include <stdexcept>
 #include "../resource_manager/resource_manager.hpp"
+#include "light.hpp"
 #include "node.hpp"
 #include "renderable.hpp"
+#include "uniform_buffer.hpp"
 
 #ifdef NDEBUG
 
@@ -118,16 +122,37 @@ ember::RenderEngine::RenderEngine(Window &window) : m_window(window), m_drawAxis
   Mesh mesh(std::span<const PosColVertex>{axisVertices}, axisIndices);
 
   getResourceManager()->moveMesh("axisMesh"_id, std::move(mesh));
+
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
+  glEnable(GL_DEPTH_TEST);
+
+  m_pLightUniformBuffer = std::make_unique<UniformBuffer>(&m_lightData, 2, GL_STATIC_DRAW);
 }
 
 auto ember::RenderEngine::render(const Node *pScene) -> void {
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  if (!pScene->getChild(0)->is(NodeAttribute::Light)) throw std::runtime_error("Light not found");
+
+  auto pLight = static_cast<const Light *>(pScene->getChild(0));
+  m_lightData.ambientIntensity = pLight->ambientIntensity;
+  m_lightData.diffuseIntensity = pLight->diffuseIntensity;
+  m_lightData.specularIntensity = pLight->specularIntensity;
+  m_lightData.position = m_pCamera->getViewMatrix() * glm::vec4(pLight->position, 1.0f);
+
+  m_pLightUniformBuffer->bind();
+  glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightData), &m_lightData);
+  m_pLightUniformBuffer->unbind();
 
   m_renderHelper(pScene);
 }
 
 auto ember::RenderEngine::m_renderHelper(const Node *pNode) -> void {
-  if (pNode->is(NodeAttribute::Renderable)) {
+  if (pNode->is(NodeAttribute::Light)) {
+    // TODO: fix this
+
+  } else if (pNode->is(NodeAttribute::Renderable)) {
     auto pRenderable = static_cast<const Renderable *>(pNode);
 
     pRenderable->pMaterial->bindProgram();
@@ -146,8 +171,8 @@ auto ember::RenderEngine::m_renderHelper(const Node *pNode) -> void {
     }
   }
 
-  for (size_t i = 0; i < pNode->children.size(); i++) {
-    m_renderHelper(pNode->children[i].get());
+  for (auto pChild : *pNode) {
+    m_renderHelper(pChild);
   }
 }
 

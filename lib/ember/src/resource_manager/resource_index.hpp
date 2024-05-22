@@ -22,7 +22,7 @@ class ResourceIndex {
   }
 
  private:
-  ConflictFreeVariantHashMap<uint32_t, resource_desc::Mesh> m_resourceIndex;
+  ConflictFreeVariantHashMap<uint32_t, resource_desc::Object> m_resourceIndex;
 };
 
 inline auto getResourceIndex() -> ResourceIndex * {

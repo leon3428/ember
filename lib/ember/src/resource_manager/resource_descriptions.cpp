@@ -3,6 +3,6 @@
 namespace rd = ember::resource_desc;
 
 template <>
-auto rd::load<rd::Mesh>(const rapidjson::Value &value) -> rd::Mesh {
+auto rd::load<rd::Object>(const rapidjson::Value &value) -> rd::Object {
   return {value["name"].GetString(), value["path"].GetString()};
 }

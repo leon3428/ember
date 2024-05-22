@@ -1,7 +1,5 @@
-#include <array>
 #include <cstddef>
 #include <iostream>
-#include <memory>
 #include <vector>
 
 // clang-format off
@@ -36,81 +34,42 @@ int main(int, char *argv[]) {
     renderEngine.setCamera(&camera);
 
     auto scene = ember::Node();
-    scene.children.push_back(std::make_unique<ember::Renderable>());
 
-    auto pHead = static_cast<ember::Renderable *>(scene.children[0].get());
+    auto pLight = scene.emplaceChild<ember::Light>();
+    pLight->ambientIntensity = {1.0f, 1.0f, 1.0f, 1.0f};
+    pLight->diffuseIntensity = {1.0f, 1.0f, 1.0f, 1.0f};
+    pLight->specularIntensity = {1.0f, 1.0f, 1.0f, 1.0f};
+
+    auto headNode = ember::loadObject("headObject"_id);
+    auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
+    scene.steal(headNode);
+
     ember::ObjectController objController(pHead, window);
-
-    ember::ProjectionSpaceCullingMaterial material1;
-    pHead->pMaterial = &material1;
-    auto mesh = resourceManager->getMesh("headMesh"_id);
-    pHead->pVertexArray = mesh;
-    pHead->vertexCnt = mesh->getNumVertices();
-    pHead->byteOffset = 0;
-
-    scene.children.push_back(std::make_unique<ember::Renderable>());
-    auto pObj2 = static_cast<ember::Renderable *>(scene.children[1].get());
-
-    ember::SceneSpaceCullingMaterial material2;
-    material2.color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-    pObj2->pMaterial = &material2;
-    pObj2->pVertexArray = mesh;
-    pObj2->vertexCnt = mesh->getNumVertices();
-    pObj2->byteOffset = 0;
-    pObj2->position.x = 2;
-
-    auto bezier1 = ember::Bezier();
-    auto bezier2 = ember::Bezier();
-
-    scene.children.push_back(std::make_unique<ember::BezierNode>(bezier1, 40));
-    scene.children.push_back(std::make_unique<ember::BezierNode>(bezier2, 40));
-    auto pBezierNode1 = static_cast<ember::BezierNode *>(scene.children[2].get());
-    auto pBezierNode2 = static_cast<ember::BezierNode *>(scene.children[3].get());
-    pBezierNode2->setColor({0.0f, 0.78f, 0.96f, 1.0f});
+    auto bezier = ember::Bezier();
+    auto pBezierNode = scene.emplaceChild<ember::BezierNode>(bezier, 40);
     ember::Object3d *pBezierObject = pHead;
     bool animationPlaying = false;
     float t = 0.0f;
 
-    scene.children.push_back(std::make_unique<ember::Renderable>());
-    auto pControlPoligon = static_cast<ember::Renderable *>(scene.children[4].get());
-    ember::SolidColorMaterial material3;
-
-    size_t vertexCnt = 0;
-    std::array<ember::PosVertex, 20> controlPoligonVertices;
-    ember::DynamicLineStrip<ember::PosVertex> controlPoligonStrip(controlPoligonVertices);
-
-    material3.color = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f);
-    pControlPoligon->pMaterial = &material3;
-    pControlPoligon->pVertexArray = &controlPoligonStrip;
-    pControlPoligon->vertexCnt = 0;
-    pControlPoligon->byteOffset = 0;
-
     std::vector<glm::quat> rotations;
 
-    eventBus.subscribe<ember::KeyPressedEvent>([&bezier1, pBezierNode1, &bezier2, pBezierNode2, pBezierObject,
-                                                &animationPlaying, &t, pControlPoligon, &controlPoligonStrip, &controlPoligonVertices, &vertexCnt, &rotations](const ember::KeyPressedEvent &e) {
-      if (e.keyCode == ember::KeyCode::KeyTab) {
-        auto pos = pBezierObject->position;
-        pos.x *= -1;
-        pos.y *= -1;
-        bezier1.addInterpolatedPoint({pos.x, pos.y, pos.z});
-        pBezierNode1->update();
-        bezier2.addControlPoint({pos.x, pos.y, pos.z});
-        pBezierNode2->update();
+    eventBus.subscribe<ember::KeyPressedEvent>(
+        [&bezier, pBezierNode, pBezierObject, &animationPlaying, &t, &rotations](const ember::KeyPressedEvent &e) {
+          if (e.keyCode == ember::KeyCode::KeyTab) {
+            auto pos = pBezierObject->position;
+            pos.x *= -1;
+            pos.y *= -1;
+            bezier.addInterpolatedPoint({pos.x, pos.y, pos.z});
+            pBezierNode->update();
+            rotations.push_back(pBezierObject->rotation);
 
-        controlPoligonVertices[vertexCnt] = {pos};
-        vertexCnt++;
-        controlPoligonStrip.writeVertices(0, controlPoligonVertices);
-        pControlPoligon->vertexCnt=vertexCnt;
+          } else if (e.keyCode == ember::KeyCode::KeySpace) {
+            animationPlaying = true;
+            t = 0.0f;
+          }
+        });
 
-        rotations.push_back(pBezierObject->rotation);
-
-      } else if (e.keyCode == ember::KeyCode::KeySpace) {
-        animationPlaying = true;
-        t = 0.0f;
-      }
-    });
-
+    // renderEngine.wireframeMode();
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
     auto prevTime = std::chrono::high_resolution_clock::now();
@@ -127,19 +86,18 @@ int main(int, char *argv[]) {
           animationPlaying = false;
         }
 
-        auto step = 1.0f / static_cast<float>(vertexCnt - 1);
+        auto pointCnt = bezier.getPointCount();
+        auto step = 1.0f / static_cast<float>(pointCnt - 1);
         auto i = static_cast<size_t>(t / step);
-        if(i >= vertexCnt - 1)
-          i = vertexCnt - 2;
-        auto lambda = (t - static_cast<float>(i) * step)  / step;
-        std::cout << i << ' ' << lambda << '\n'; 
+        if (i >= pointCnt - 1) i = pointCnt - 2;
+        auto lambda = (t - static_cast<float>(i) * step) / step;
 
-        auto p = bezier1.getPosition(t);
+        auto p = bezier.getPosition(t);
         pBezierObject->position = {p(0), p(1), p(2)};
         pBezierObject->position.x *= -1;
         pBezierObject->position.y *= -1;
 
-        pBezierObject->rotation = glm::slerp(rotations[i], rotations[i+1], lambda);
+        pBezierObject->rotation = glm::slerp(rotations[i], rotations[i + 1], lambda);
       }
 
       objController.update(deltaTime);

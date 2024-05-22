@@ -26,18 +26,21 @@ set(PROJECT_HEADERS
     src/graphics/vertex_buffer.hpp
     src/graphics/vertex_array.hpp
     src/graphics/index_buffer.hpp
+    src/graphics/uniform_buffer.hpp
     src/graphics/mesh.hpp
     src/graphics/dynamic_line_strip.hpp
     src/graphics/solid_color_material.hpp
     src/graphics/vertex_color_material.hpp
+    src/graphics/phong_material.hpp
     src/graphics/projection_space_culling_material.hpp
     src/graphics/scene_space_culling_material.hpp
     src/graphics/material.hpp
     src/graphics/camera.hpp
     src/graphics/perspective_camera.hpp
     src/graphics/fps_camera_controller.hpp
-    src/graphics/mesh_loader.hpp
+    src/graphics/object_loader.hpp
     src/graphics/object_controller.hpp
+    src/graphics/light.hpp
 
     src/resource_manager/resource_descriptions.hpp
     src/resource_manager/resource_manager.hpp
@@ -67,16 +70,19 @@ set(PROJECT_SOURCES
     src/graphics/vertex_buffer.cpp
     src/graphics/vertex_array.cpp
     src/graphics/index_buffer.cpp
+    src/graphics/uniform_buffer.cpp
     src/graphics/mesh.cpp
     src/graphics/solid_color_material.cpp
     src/graphics/vertex_color_material.cpp
+    src/graphics/phong_material.cpp
     src/graphics/projection_space_culling_material.cpp
     src/graphics/scene_space_culling_material.cpp
     src/graphics/material.cpp
     src/graphics/perspective_camera.cpp
     src/graphics/fps_camera_controller.cpp
-    src/graphics/mesh_loader.cpp
+    src/graphics/object_loader.cpp
     src/graphics/object_controller.cpp
+    src/graphics/light.cpp
 
     src/resource_manager/resource_descriptions.cpp
     src/resource_manager/resource_manager.cpp

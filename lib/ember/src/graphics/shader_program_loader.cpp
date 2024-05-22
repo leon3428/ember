@@ -11,7 +11,7 @@ auto ember::shader_program::load(Identifier idn) -> ember::ShaderProgram {
   if (idn == "solidColor"_id) {
     // clang-format off
     Shader solidColorShaders[] = {
-      makeShaderFromFile(GL_VERTEX_SHADER, shaderFolder + "/solidColorShader.vert"),
+      makeShaderFromFile(GL_VERTEX_SHADER, shaderFolder + "/simple.vert"),
       makeShaderFromFile(GL_FRAGMENT_SHADER, shaderFolder + "/solidColorShader.frag")
     };
     // clang-format on
@@ -46,6 +46,18 @@ auto ember::shader_program::load(Identifier idn) -> ember::ShaderProgram {
       makeShaderFromFile(GL_VERTEX_SHADER, shaderFolder + "/sceneSpaceCulling.vert"),
       makeShaderFromFile(GL_GEOMETRY_SHADER, shaderFolder + "/sceneSpaceCulling.geom"),
       makeShaderFromFile(GL_FRAGMENT_SHADER, shaderFolder + "/solidColorShader.frag")
+    };
+    // clang-format on
+
+    return {shaders};
+  }
+
+  if (idn == "phongShaderProgram"_id) {
+    // clang-format off
+    Shader shaders[] = {
+      makeShaderFromFile(GL_VERTEX_SHADER, shaderFolder + "/sceneSpaceCulling.vert"),
+      makeShaderFromFile(GL_GEOMETRY_SHADER, shaderFolder + "/faceNormal.geom"),
+      makeShaderFromFile(GL_FRAGMENT_SHADER, shaderFolder + "/phong.frag")
     };
     // clang-format on
 

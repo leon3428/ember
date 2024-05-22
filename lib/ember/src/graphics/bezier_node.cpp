@@ -1,16 +1,10 @@
 #include "bezier_node.hpp"
-#include <array>
-#include <iostream>
-#include <memory>
-#include "../core/utils.hpp"
 #include "glm/fwd.hpp"
 #include "renderable.hpp"
-#include "vertex_types.hpp"
 
 ember::BezierNode::BezierNode(const Bezier &bezier, size_t numSamples)
     : m_bezier(bezier), m_numSamples(numSamples), m_points(numSamples), m_curveStrip(m_points) {
-  children.push_back(std::make_unique<Renderable>());
-  m_pCurveRenderable = static_cast<Renderable *>(children[0].get());
+  m_pCurveRenderable = emplaceChild<Renderable>();
   m_curveMaterial.color = {1.0f, 0.11f, 0.85f, 1.0f};
   m_pCurveRenderable->pVertexArray = &m_curveStrip;
   m_pCurveRenderable->pMaterial = &m_curveMaterial;

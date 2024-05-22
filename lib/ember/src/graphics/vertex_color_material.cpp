@@ -6,7 +6,7 @@
 
 ember::VertexColorMaterial::VertexColorMaterial()
     : Material(getResourceManager()->getShaderProgram("vertexColor"_id)),
-      m_mvpLocation(glGetUniformLocation(m_shaderProgram.getShaderProgramId(), "u_mvp")) {}
+      m_mvpLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_mvp")) {}
 
 auto ember::VertexColorMaterial::uploadMvp(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const -> void {
   auto mvp = projection * view * model;

@@ -7,8 +7,8 @@
 ember::SolidColorMaterial::SolidColorMaterial()
     : Material(getResourceManager()->getShaderProgram("solidColor"_id)),
       color(1.0f, 0.0f, 0.0f, 1.0f),
-      m_colorLocation(glGetUniformLocation(m_shaderProgram.getShaderProgramId(), "u_color")),
-      m_mvpLocation(glGetUniformLocation(m_shaderProgram.getShaderProgramId(), "u_mvp")) {}
+      m_colorLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_color")),
+      m_mvpLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_mvp")) {}
 
 auto ember::SolidColorMaterial::uploadUniforms() const -> void { glUniform4fv(m_colorLocation, 1, &color[0]); }
 

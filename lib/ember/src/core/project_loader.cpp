@@ -34,10 +34,10 @@ auto ember::project::load(std::filesystem::path path) -> void {
       auto nameHash = hash(resource["name"].GetString());
       auto type = resource["type"].GetString();
 
-      if (strcmp(type, "mesh") == 0) {
-        auto meshDesc = resource_desc::load<resource_desc::Mesh>(resource);
-        meshDesc.path = path / meshDesc.path;
-        resourceIndex->setDescription(nameHash, meshDesc);
+      if (strcmp(type, "object") == 0) {
+        auto objectDesc = resource_desc::load<resource_desc::Object>(resource);
+        objectDesc.path = path / objectDesc.path;
+        resourceIndex->setDescription(nameHash, objectDesc);
       }
     }
   }

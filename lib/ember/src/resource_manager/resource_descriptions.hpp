@@ -7,7 +7,7 @@
 
 namespace ember::resource_desc {
 
-struct Mesh {
+struct Object {
   std::string name;
   std::filesystem::path path;
 };
@@ -16,7 +16,7 @@ template <typename T>
 auto load(const rapidjson::Value &value) -> T;
 
 template <>
-auto load<Mesh>(const rapidjson::Value &value) -> Mesh;
+auto load<Object>(const rapidjson::Value &value) -> Object;
 
 }  // namespace ember::resource_desc
 
