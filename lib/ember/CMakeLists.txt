@@ -8,6 +8,7 @@ set(PROJECT_HEADERS
     src/core/window.hpp
     src/core/conflict_free_variant_hash_map.hpp
     src/core/project_loader.hpp
+    src/core/bezier.hpp
 
     src/graphics/node.hpp
     src/graphics/object3d.hpp
@@ -20,7 +21,7 @@ set(PROJECT_HEADERS
     src/graphics/shader.hpp
     src/graphics/vertex_types.hpp
 
-    src/graphics/bezier_curve.hpp
+    src/graphics/bezier_node.hpp
 
     src/graphics/vertex_buffer.hpp
     src/graphics/vertex_array.hpp
@@ -47,6 +48,7 @@ set(PROJECT_SOURCES
     src/core/utils.cpp
     src/core/window.cpp
     src/core/project_loader.cpp
+    src/core/bezier.cpp
 
     src/graphics/node.cpp
     src/graphics/object3d.cpp
@@ -60,7 +62,7 @@ set(PROJECT_SOURCES
     src/graphics/shader.cpp
     src/graphics/vertex_types.cpp
 
-    src/graphics/bezier_curve.cpp
+    src/graphics/bezier_node.cpp
 
     src/graphics/vertex_buffer.cpp
     src/graphics/vertex_array.cpp

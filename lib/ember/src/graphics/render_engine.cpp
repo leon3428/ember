@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 #include <iostream>
 #include "../resource_manager/resource_manager.hpp"
-#include "bezier_curve.hpp"
 #include "node.hpp"
 #include "renderable.hpp"
 
