@@ -35,7 +35,7 @@ auto ember::FpsCameraController::update(float deltaTime) -> void {
     m_camera->position += (m_moveSpeed * deltaTime) * yAxis;
   }
 
-  if (m_window.isMouseButtonPressed(ember::MouseButtonCode::MouseButtonRight)) {
+  if (m_window.isMouseButtonPressed(ember::MouseButtonCode::MouseButtonLeft)) {
     float xAngle = (mouseX - m_lastMouseX) * -m_turnSpeed * deltaTime;
     float yAngle = (mouseY - m_lastMouseY) * m_turnSpeed * deltaTime;
 

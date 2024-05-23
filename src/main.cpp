@@ -37,7 +37,7 @@ int main(int, char *argv[]) {
 
     ember::ProjectionSpaceCullingMaterial material1;
     pHead->pMaterial = &material1;
-    auto mesh = resourceManager->getMesh("headMesh"_id);
+    auto mesh = resourceManager->getMesh("cubeMesh"_id);
     pHead->pMesh = mesh;
     pHead->vertexCnt = mesh->getNumVertices();
     pHead->byteOffset = 0;
