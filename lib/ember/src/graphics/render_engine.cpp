@@ -127,7 +127,7 @@ ember::RenderEngine::RenderEngine(Window &window) : m_window(window), m_drawAxis
   glCullFace(GL_BACK);
   glEnable(GL_DEPTH_TEST);
 
-  m_pLightUniformBuffer = std::make_unique<UniformBuffer>(&m_lightData, 2, GL_STATIC_DRAW);
+  m_pLightUniformBuffer = std::make_unique<UniformBuffer>(&m_lightData, 2, GL_DYNAMIC_DRAW );
 }
 
 auto ember::RenderEngine::render(const Node *pScene) -> void {
