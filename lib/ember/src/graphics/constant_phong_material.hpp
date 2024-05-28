@@ -1,13 +1,13 @@
-#ifndef PHONG_MATERIAL_HPP
-#define PHONG_MATERIAL_HPP
+#ifndef CONSTANT_PHONG_MATERIAL_HPP
+#define CONSTANT_PHONG_MATERIAL_HPP
 
 #include <glm/glm.hpp>
 #include "material.hpp"
 
 namespace ember {
-class PhongMaterial : public Material {
+class ConstantPhongMaterial : public Material {
  public:
-  PhongMaterial();
+  ConstantPhongMaterial();
 
   glm::vec3 ambientColor;
   glm::vec3 diffuseColor;
@@ -28,4 +28,4 @@ class PhongMaterial : public Material {
 };
 }  // namespace ember
 
-#endif  // PHONG_MATERIAL_HPP
+#endif  // CONSTANT_PHONG_MATERIAL_HPP

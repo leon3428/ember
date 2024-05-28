@@ -31,7 +31,7 @@ set(PROJECT_HEADERS
     src/graphics/dynamic_line_strip.hpp
     src/graphics/solid_color_material.hpp
     src/graphics/vertex_color_material.hpp
-    src/graphics/phong_material.hpp
+    src/graphics/constant_phong_material.hpp
     src/graphics/projection_space_culling_material.hpp
     src/graphics/scene_space_culling_material.hpp
     src/graphics/material.hpp
@@ -74,7 +74,7 @@ set(PROJECT_SOURCES
     src/graphics/mesh.cpp
     src/graphics/solid_color_material.cpp
     src/graphics/vertex_color_material.cpp
-    src/graphics/phong_material.cpp
+    src/graphics/constant_phong_material.cpp
     src/graphics/projection_space_culling_material.cpp
     src/graphics/scene_space_culling_material.cpp
     src/graphics/material.cpp

@@ -9,7 +9,7 @@
 #include "../resource_manager/resource_index.hpp"
 #include "../resource_manager/resource_manager.hpp"
 #include "mesh.hpp"
-#include "phong_material.hpp"
+#include "constant_phong_material.hpp"
 #include "renderable.hpp"
 #include "vertex_types.hpp"
 
@@ -40,7 +40,7 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
   auto meshNameHash = hash(mesh->mName.C_Str());
   auto pEmberMesh = pResourceManager->getMesh(meshNameHash);
   if (!pEmberMesh) {
-    std::vector<PosVertex> vertices;
+    std::vector<PosNormVertex> vertices;
     std::vector<uint32_t> indices;
 
     float x_min = std::numeric_limits<float>::max();
@@ -52,7 +52,8 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
 
     for (size_t i = 0; i < mesh->mNumVertices; i++) {
       auto vertex = mesh->mVertices[i];
-      vertices.emplace_back(glm::vec3(vertex.x, vertex.y, vertex.z));
+      auto normal = mesh->mNormals[i];
+      vertices.emplace_back(glm::vec3(vertex.x, vertex.y, vertex.z), glm::vec3(normal.x, normal.y, normal.z));
 
       x_min = std::min(x_min, vertex.x);
       x_max = std::max(x_max, vertex.x);
@@ -78,7 +79,7 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
       }
     }
 
-    Mesh emberMesh(std::span<PosVertex>{vertices}, indices);
+    Mesh emberMesh(std::span<PosNormVertex>{vertices}, indices);
     pResourceManager->moveMesh(meshNameHash, std::move(emberMesh));
     pEmberMesh = pResourceManager->getMesh(meshNameHash);
   }
@@ -95,7 +96,7 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
     auto materialNameHash = hash(pMaterial->GetName().C_Str());
     auto pCachedMaterial = pResourceManager->getMaterial(materialNameHash);
     if (!pCachedMaterial) {
-      auto pEmberMaterial = std::make_unique<PhongMaterial>();
+      auto pEmberMaterial = std::make_unique<ConstantPhongMaterial>();
 
       aiColor3D ambientK, diffuseK, specularK;
       float shininessK;

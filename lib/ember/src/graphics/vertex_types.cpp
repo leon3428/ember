@@ -10,6 +10,16 @@ auto ember::PosVertex::vertexAttrib() -> void {
   glEnableVertexAttribArray(0);
 }
 
+auto ember::PosNormVertex::vertexAttrib() -> void {
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(PosNormVertex),
+                        reinterpret_cast<void *>(offsetof(PosNormVertex, pos)));
+  glEnableVertexAttribArray(0);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(PosNormVertex),
+                        reinterpret_cast<void *>(offsetof(PosNormVertex, norm)));
+  glEnableVertexAttribArray(1);
+}
+
 auto ember::PosColVertex::vertexAttrib() -> void {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(PosColVertex),
                         reinterpret_cast<void *>(offsetof(PosColVertex, pos)));

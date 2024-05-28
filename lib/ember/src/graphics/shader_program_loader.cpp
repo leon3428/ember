@@ -52,11 +52,22 @@ auto ember::shader_program::load(Identifier idn) -> ember::ShaderProgram {
     return {shaders};
   }
 
-  if (idn == "phongShaderProgram"_id) {
+  if (idn == "constantPhongShaderProgram"_id) {
     // clang-format off
     Shader shaders[] = {
       makeShaderFromFile(GL_VERTEX_SHADER, shaderFolder + "/sceneSpaceCulling.vert"),
       makeShaderFromFile(GL_GEOMETRY_SHADER, shaderFolder + "/faceNormal.geom"),
+      makeShaderFromFile(GL_FRAGMENT_SHADER, shaderFolder + "/phong.frag")
+    };
+    // clang-format on
+
+    return {shaders};
+  }
+
+  if (idn == "gouraudPhongShaderProgram"_id) {
+    // clang-format off
+    Shader shaders[] = {
+      makeShaderFromFile(GL_VERTEX_SHADER, shaderFolder + "/gouraud.vert"),
       makeShaderFromFile(GL_FRAGMENT_SHADER, shaderFolder + "/phong.frag")
     };
     // clang-format on
