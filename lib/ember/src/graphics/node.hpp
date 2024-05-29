@@ -94,6 +94,12 @@ class Node {
   std::vector<std::unique_ptr<Node>> m_children;
 };
 
+auto operator==(const Node::Iterator &a, const Node::Iterator &b) -> bool;
+auto operator!=(const Node::Iterator &a, const Node::Iterator &b) -> bool;
+
+auto operator==(const Node::ConstIterator &a, const Node::ConstIterator &b) -> bool;
+auto operator!=(const Node::ConstIterator &a, const Node::ConstIterator &b) -> bool;
+
 }  // namespace ember
 
 #endif  // NODE_HPP

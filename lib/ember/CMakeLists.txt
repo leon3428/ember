@@ -31,11 +31,7 @@ set(PROJECT_HEADERS
     src/graphics/dynamic_line_strip.hpp
     src/graphics/solid_color_material.hpp
     src/graphics/vertex_color_material.hpp
-    src/graphics/constant_phong_material.hpp
-    src/graphics/gouraud_phong_material.hpp
     src/graphics/phong_material.hpp
-    src/graphics/projection_space_culling_material.hpp
-    src/graphics/scene_space_culling_material.hpp
     src/graphics/material.hpp
     src/graphics/camera.hpp
     src/graphics/perspective_camera.hpp
@@ -76,11 +72,7 @@ set(PROJECT_SOURCES
     src/graphics/mesh.cpp
     src/graphics/solid_color_material.cpp
     src/graphics/vertex_color_material.cpp
-    src/graphics/constant_phong_material.cpp
-    src/graphics/gouraud_phong_material.cpp
     src/graphics/phong_material.cpp
-    src/graphics/projection_space_culling_material.cpp
-    src/graphics/scene_space_culling_material.cpp
     src/graphics/material.cpp
     src/graphics/perspective_camera.cpp
     src/graphics/fps_camera_controller.cpp
@@ -96,6 +88,6 @@ set(PROJECT_SOURCES
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNDEBUG")
 
 add_library(${PROJECT_NAME}_lib STATIC ${PROJECT_SOURCES} ${PROJECT_HEADERS})
-target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wall -Wextra -Wpedantic -std=c++20)
+target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wall -Wextra -Wpedantic -Werror -std=c++20)
 target_link_libraries(${PROJECT_NAME}_lib glad glfw glm assimp rapidjson)
 target_include_directories(${PROJECT_NAME}_lib  PRIVATE ../../external)

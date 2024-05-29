@@ -9,10 +9,9 @@
 #include "../resource_manager/resource_index.hpp"
 #include "../resource_manager/resource_manager.hpp"
 #include "mesh.hpp"
-#include "constant_phong_material.hpp"
+#include "phong_material.hpp"
 #include "renderable.hpp"
 #include "vertex_types.hpp"
-#include "gouraud_phong_material.hpp"
 
 auto ember::loadObject(Identifier idn) -> ember::Node {
   auto description = getResourceIndex()->getDescription<resource_desc::Object>(idn);
@@ -97,8 +96,7 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
     auto materialNameHash = hash(pMaterial->GetName().C_Str());
     auto pCachedMaterial = pResourceManager->getMaterial(materialNameHash);
     if (!pCachedMaterial) {
-      auto pEmberMaterial = std::make_unique<ConstantPhongMaterial>();
-      // auto pEmberMaterial = std::make_unique<GouraudPhongMaterial>();
+      auto pEmberMaterial = std::make_unique<PhongMaterial>();
 
       aiColor3D ambientK, diffuseK, specularK;
       float shininessK;
