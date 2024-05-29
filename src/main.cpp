@@ -42,7 +42,32 @@ int main(int, char *argv[]) {
 
     auto headNode = ember::loadObject("headObject"_id);
     auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
+    auto pMaterial = static_cast<ember::ConstantPhongMaterial*>(pHead->pMaterial);
     scene.steal(headNode);
+
+    auto pHead2 = scene.emplaceChild<ember::Renderable>();
+    auto gouraudMaterial = ember::GouraudPhongMaterial();
+    gouraudMaterial.ambientColor = pMaterial->ambientColor;
+    gouraudMaterial.diffuseColor = pMaterial->diffuseColor;
+    gouraudMaterial.specularColor = pMaterial->specularColor;
+    gouraudMaterial.shininess = pMaterial->shininess;
+
+    pHead2->pMaterial = &gouraudMaterial;
+    pHead2->byteOffset = 0;
+    pHead2->pVertexArray = pHead->pVertexArray;
+    pHead2->vertexCnt = pHead->vertexCnt;
+
+    auto pHead3 = scene.emplaceChild<ember::Renderable>();
+    auto phongMaterial = ember::PhongMaterial();
+    phongMaterial.ambientColor = pMaterial->ambientColor;
+    phongMaterial.diffuseColor = pMaterial->diffuseColor;
+    phongMaterial.specularColor = pMaterial->specularColor;
+    phongMaterial.shininess = pMaterial->shininess;
+
+    pHead3->pMaterial = &phongMaterial;
+    pHead3->byteOffset = 0;
+    pHead3->pVertexArray = pHead->pVertexArray;
+    pHead3->vertexCnt = pHead->vertexCnt;
 
     ember::ObjectController objController(pHead, window);
     auto bezier = ember::Bezier();
@@ -101,6 +126,14 @@ int main(int, char *argv[]) {
       }
 
       objController.update(deltaTime);
+      pHead2->position = pHead->position;
+      pHead2->position.x += 3;
+      pHead2->rotation = pHead->rotation;
+
+      pHead3->position = pHead->position;
+      pHead3->position.x -= 3;
+      pHead3->rotation = pHead->rotation;
+
       cameraController.update(deltaTime);
       renderEngine.render(&scene);
 

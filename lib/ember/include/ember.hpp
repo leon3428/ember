@@ -18,6 +18,9 @@
 #include "../src/graphics/dynamic_line_strip.hpp"
 #include "../src/graphics/bezier_node.hpp"
 #include "../src/graphics/object_loader.hpp"
+#include "../src/graphics/gouraud_phong_material.hpp"
+#include "../src/graphics/constant_phong_material.hpp"
+#include "../src/graphics/phong_material.hpp"
 
 #include "../src/graphics/node.hpp"
 #include "../src/graphics/object3d.hpp"
