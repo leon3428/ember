@@ -13,11 +13,33 @@ class Object3d : public Node {
   virtual ~Object3d() = default;
 
   [[nodiscard]] auto getMatrix() const -> glm::mat4;
-  [[nodiscard]] auto getInverse() const -> glm::mat4;
+  // [[nodiscard]] auto getInverse() const -> glm::mat4;
 
-  glm::vec3 position;
-  glm::vec3 scale;
-  glm::quat rotation;
+  auto setPosition(const glm::vec3 &position) -> void;
+
+  auto setPosX(float x) -> void;
+  auto setPosY(float y) -> void;
+  auto setPosZ(float z) -> void;
+
+  auto move(const glm::vec3 &move) -> void;
+
+  auto setScale(const glm::vec3 &scale) -> void;
+  auto scale(float factor) -> void;
+
+  auto setRotation(const glm::quat &rotation) -> void;
+
+  auto rotate(const glm::quat &rot) -> void;
+
+  [[nodiscard]] inline auto getPosition() const { return m_position; }
+  [[nodiscard]] inline auto getScale() const { return m_scale; }
+  [[nodiscard]] inline auto getRotation() const { return m_rotation; }
+
+ private:
+  mutable bool m_dirty;
+  glm::vec3 m_position;
+  glm::vec3 m_scale;
+  glm::quat m_rotation;
+  mutable glm::mat4 m_mat;
 };
 
 }  // namespace ember

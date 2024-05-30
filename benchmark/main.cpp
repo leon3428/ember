@@ -26,7 +26,7 @@ int main(int, char *argv[]) {
     ember::RenderEngine renderEngine(window);
 
     ember::PerspectiveCamera camera(glm::radians(45.0f), 0.1f, 200.0f);
-    ember::FpsCameraController cameraController(&camera, window);
+    camera.setPosY(20);
     renderEngine.setCamera(&camera);
 
     auto scene = ember::Node();
@@ -35,8 +35,8 @@ int main(int, char *argv[]) {
     pLight->ambientIntensity = {0.3f, 0.3f, 0.3f, 1.0f};
     pLight->diffuseIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
     pLight->specularIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
-    pLight->position.y = -8;
-    pLight->position.z = 5;
+    pLight->setPosY(-8);
+    pLight->setPosZ(5);
 
     auto headNode = ember::loadObject("robotScene"_id);
     scene.steal(headNode);
@@ -51,9 +51,8 @@ int main(int, char *argv[]) {
 
     for (int i = 0; i < numFrames && !window.shouldClose(); i++) {
       auto pos = cameraCurve.getPosition(static_cast<float>(i) / static_cast<float>(numFrames - 1));
-      camera.position.x = pos(0);
-      camera.position.y = -20;
-      camera.position.z = pos(2);
+      camera.setPosX(pos(0));
+      camera.setPosZ(pos(2));
       camera.lookAt(origin);
 
       renderEngine.render(&scene);

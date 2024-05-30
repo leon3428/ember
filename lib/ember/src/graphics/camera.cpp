@@ -7,6 +7,8 @@
 ember::Camera::Camera() { m_attributes |= static_cast<unsigned>(NodeAttribute::Camera); }
 
 auto ember::Camera::lookAt(glm::vec3 target) -> void {
-  auto dir = glm::normalize(target - position);
-  rotation = glm::quatLookAt(dir, -yAxis);
+  auto dir = glm::normalize(target - getPosition());
+
+  auto tmp = glm::quatLookAt(dir, yAxis);
+  setRotation(tmp);
 }

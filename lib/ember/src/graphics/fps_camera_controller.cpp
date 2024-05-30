@@ -11,36 +11,40 @@ ember::FpsCameraController::FpsCameraController(Camera *camera, Window &window)
 auto ember::FpsCameraController::update(float deltaTime) -> void {
   auto [mouseX, mouseY] = m_window.getMousePos();
 
-  auto rotMat = glm::mat4_cast(m_camera->rotation);
+  auto rotMat = glm::mat4_cast(m_camera->getRotation());
   auto right = glm::vec3(rotMat[0][0], rotMat[0][1], rotMat[0][2]);    // First row
   auto forward = glm::vec3(rotMat[2][0], rotMat[2][1], rotMat[2][2]);  // Third row
+  glm::vec3 move(0.0f);
 
   if (m_window.isKeyPressed(KeyCode::KeyW)) {
-    m_camera->position -= (m_moveSpeed * deltaTime) * forward;
+    move -= (m_moveSpeed * deltaTime) * forward;
   }
   if (m_window.isKeyPressed(KeyCode::KeyS)) {
-    m_camera->position += (m_moveSpeed * deltaTime) * forward;
+    move += (m_moveSpeed * deltaTime) * forward;
   }
   if (m_window.isKeyPressed(KeyCode::KeyA)) {
-    m_camera->position -= (m_moveSpeed * deltaTime) * right;
+    move -= (m_moveSpeed * deltaTime) * right;
   }
   if (m_window.isKeyPressed(KeyCode::KeyD)) {
-    m_camera->position += (m_moveSpeed * deltaTime) * right;
-  }
-  if (m_window.isKeyPressed(KeyCode::KeyLeftShift)) {
-    m_camera->position -= (m_moveSpeed * deltaTime) * yAxis;
+    move += (m_moveSpeed * deltaTime) * right;
   }
   if (m_window.isKeyPressed(KeyCode::KeyLeftControl)) {
-    m_camera->position += (m_moveSpeed * deltaTime) * yAxis;
+    move -= (m_moveSpeed * deltaTime) * yAxis;
+  }
+  if (m_window.isKeyPressed(KeyCode::KeyLeftShift)) {
+    move += (m_moveSpeed * deltaTime) * yAxis;
   }
 
+  m_camera->move(move);
+
   if (m_window.isMouseButtonPressed(ember::MouseButtonCode::MouseButtonLeft)) {
-    float xAngle = (mouseX - m_lastMouseX) * m_turnSpeed * deltaTime;
+    float xAngle = (mouseX - m_lastMouseX) * -m_turnSpeed * deltaTime;
     float yAngle = (mouseY - m_lastMouseY) * -m_turnSpeed * deltaTime;
 
     auto q1 = glm::angleAxis(xAngle, yAxis);
     auto q2 = glm::angleAxis(yAngle, xAxis);
-    m_camera->rotation = q1 * m_camera->rotation * q2;
+    auto tmp = q1 * m_camera->getRotation() * q2;
+    m_camera->setRotation(tmp);
   }
 
   m_lastMouseX = mouseX;

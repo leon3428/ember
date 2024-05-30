@@ -148,7 +148,7 @@ auto ember::RenderEngine::render(const Node *pScene) -> void {
   m_lightData.ambientIntensity = pLight->ambientIntensity;
   m_lightData.diffuseIntensity = pLight->diffuseIntensity;
   m_lightData.specularIntensity = pLight->specularIntensity;
-  m_lightData.position = m_pCamera->getViewMatrix() * glm::vec4(pLight->position, 1.0f);
+  m_lightData.position = m_pCamera->getViewMatrix() * glm::vec4(pLight->getPosition(), 1.0f);
 
   m_pLightUniformBuffer->bind();
   glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightData), &m_lightData);

@@ -26,7 +26,7 @@ int main(int, char *argv[]) {
 
     ember::PerspectiveCamera camera(glm::radians(45.0f), 0.1f, 200.0f);
     ember::FpsCameraController cameraController(&camera, window);
-    camera.position.z = 10;
+    camera.setPosZ(10);
     renderEngine.setCamera(&camera);
 
     auto scene = ember::Node();
@@ -35,14 +35,14 @@ int main(int, char *argv[]) {
     pLight->ambientIntensity = {0.3f, 0.3f, 0.3f, 1.0f};
     pLight->diffuseIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
     pLight->specularIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
-    pLight->position.y = -8;
-    pLight->position.z = 5;
+    pLight->setPosY(-8);
+    pLight->setPosZ(5);
 
     auto headNode = ember::loadObject("box"_id);
-    // auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
+    auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
     scene.steal(headNode);
 
-    ember::ObjectController objController(pLight, window);
+    ember::ObjectController objController(pHead, window);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 

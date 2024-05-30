@@ -2,6 +2,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/ext/quaternion_trigonometric.hpp"
+#include "glm/fwd.hpp"
 
 ember::ObjectController::ObjectController(Object3d *pObject, Window &window)
     : m_pObject(pObject),
@@ -13,56 +14,66 @@ ember::ObjectController::ObjectController(Object3d *pObject, Window &window)
 auto ember::ObjectController::update(float deltaTime) -> void {
   if (m_window.isKeyPressed(KeyCode::KeyKpEnter)) {
     // rotate
+    glm::quat rot = m_pObject->getRotation();
+
     if (m_window.isKeyPressed(KeyCode::KeyKp8)) {
       auto q = glm::angleAxis(m_rotateSensitivity * deltaTime, xAxis);
-      m_pObject->rotation *= q;
+      rot *= q;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp2)) {
       auto q = glm::angleAxis(-m_rotateSensitivity * deltaTime, xAxis);
-      m_pObject->rotation *= q;
+      rot *= q;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp4)) {
       auto q = glm::angleAxis(m_rotateSensitivity * deltaTime, yAxis);
-      m_pObject->rotation *= q;
+      rot *= q;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp6)) {
       auto q = glm::angleAxis(-m_rotateSensitivity * deltaTime, yAxis);
-      m_pObject->rotation *= q;
+      rot *= q;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp1)) {
       auto q = glm::angleAxis(m_rotateSensitivity * deltaTime, zAxis);
-      m_pObject->rotation *= q;
+      rot *= q;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp7)) {
       auto q = glm::angleAxis(-m_rotateSensitivity * deltaTime, zAxis);
-      m_pObject->rotation *= q;
+      rot *= q;
     }
+
+    m_pObject->setRotation(rot);
 
   } else {
     // translate
+    glm::vec3 move(0.0f);
+    float scaleFactor = 1.0f;
+
     if (m_window.isKeyPressed(KeyCode::KeyKp2)) {
-      m_pObject->position.z -= m_moveSensitivity * deltaTime;
+      move.z -= m_moveSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp8)) {
-      m_pObject->position.z += m_moveSensitivity * deltaTime;
+      move.z += m_moveSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp4)) {
-      m_pObject->position.x -= m_moveSensitivity * deltaTime;
+      move.x -= m_moveSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp6)) {
-      m_pObject->position.x += m_moveSensitivity * deltaTime;
-    }
-    if (m_window.isKeyPressed(KeyCode::KeyKp7)) {
-      m_pObject->position.y -= m_moveSensitivity * deltaTime;
+      move.x += m_moveSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKp1)) {
-      m_pObject->position.y += m_moveSensitivity * deltaTime;
+      move.y -= m_moveSensitivity * deltaTime;
+    }
+    if (m_window.isKeyPressed(KeyCode::KeyKp7)) {
+      move.y += m_moveSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKpSubtract)) {
-      m_pObject->scale -= m_scaleSensitivity * deltaTime;
+      scaleFactor -= m_scaleSensitivity * deltaTime;
     }
     if (m_window.isKeyPressed(KeyCode::KeyKpAdd)) {
-      m_pObject->scale += m_scaleSensitivity * deltaTime;
+      scaleFactor += m_scaleSensitivity * deltaTime;
     }
+
+    m_pObject->move(move);
+    m_pObject->scale(scaleFactor);
   }
 }

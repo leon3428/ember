@@ -52,7 +52,7 @@ ember::Window::Window(std::string_view name, int width, int height) {
   glfwMakeContextCurrent(m_pWindow);
   glfwSetWindowUserPointer(m_pWindow, this);
 
-  // glfwSwapInterval(0);
+  glfwSwapInterval(0);
   glfwSetKeyCallback(m_pWindow, keyCallback);
   glfwSetFramebufferSizeCallback(m_pWindow, resizeCallback);
   glfwSetMouseButtonCallback(m_pWindow, mouseButtonCallback);

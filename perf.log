@@ -1,2 +1,4 @@
 Baseline:
   Average FPS: 17.90, Average Frame Time: 55.87ms
+Transform cache:
+  Average FPS: 18.98, Average Frame Time: 52.69ms

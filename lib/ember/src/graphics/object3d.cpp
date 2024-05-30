@@ -4,18 +4,64 @@
 #include <glm/gtc/quaternion.hpp>
 #include "node.hpp"
 
-ember::Object3d::Object3d() : position(0.0f), scale(1.0f), rotation(0.0f, 0.0f, 0.0f, 1.0f) {
+ember::Object3d::Object3d()
+    : m_dirty(false), m_position(0.0f), m_scale(1.0f), m_rotation(1.0f, 0.0f, 0.0f, 0.0f), m_mat(1.0f) {
   m_attributes |= static_cast<unsigned>(NodeAttribute::Object3d);
 }
 
-auto ember::Object3d::getMatrix() const -> glm::mat4 {
-  glm::mat4 ret(1.0f);
-
-  ret = glm::translate(ret, position);
-  ret = ret * glm::mat4_cast(rotation);
-  ret = glm::scale(ret, scale);
-
-  return ret;
+auto ember::Object3d::setPosition(const glm::vec3 &position) -> void {
+  m_position = position;
+  m_dirty = true;
 }
 
-auto ember::Object3d::getInverse() const -> glm::mat4 { return glm::inverse(getMatrix()); }
+auto ember::Object3d::setPosX(float x) -> void {
+  m_position.x = x;
+  m_dirty = true;
+}
+auto ember::Object3d::setPosY(float y) -> void {
+  m_position.y = y;
+  m_dirty = true;
+}
+auto ember::Object3d::setPosZ(float z) -> void {
+  m_position.z = z;
+  m_dirty = true;
+}
+
+auto ember::Object3d::move(const glm::vec3 &move) -> void {
+  m_position += move;
+  m_dirty = true;
+}
+
+auto ember::Object3d::setScale(const glm::vec3 &scale) -> void {
+  m_scale = scale;
+  m_dirty = true;
+}
+
+auto ember::Object3d::scale(float factor) -> void {
+  m_scale *= factor;
+  m_dirty = true;
+}
+
+auto ember::Object3d::setRotation(const glm::quat &rotation) -> void {
+  m_rotation = rotation;
+  m_dirty = true;
+}
+
+auto ember::Object3d::rotate(const glm::quat &rot) -> void {
+  m_rotation *= rot;
+  m_dirty = true;
+}
+
+auto ember::Object3d::getMatrix() const -> glm::mat4 {
+  if (m_dirty) {
+    m_mat = glm::mat4(1.0f);
+    m_mat = glm::translate(m_mat, m_position);
+    m_mat = m_mat * glm::mat4_cast(m_rotation);
+    m_mat = glm::scale(m_mat, m_scale);
+    m_dirty = false;
+  }
+
+  return m_mat;
+}
+
+// auto ember::Object3d::getInverse() const -> glm::mat4 { return glm::inverse(getMatrix()); }
