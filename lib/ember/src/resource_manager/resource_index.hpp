@@ -1,7 +1,7 @@
 #ifndef RESOURCE_INDEX_HPP
 #define RESOURCE_INDEX_HPP
 
-#include "../core/conflict_free_variant_hash_map.hpp"
+#include "../core/variant_hash_map.hpp"
 #include "../core/utils.hpp"
 #include "resource_descriptions.hpp"
 
@@ -9,8 +9,6 @@ namespace ember {
 
 class ResourceIndex {
  public:
-  ResourceIndex();
-
   template <typename T>
   [[nodiscard]] inline auto getDescription(Identifier idn) const -> const T * {
     return m_resourceIndex.get<T>(idn);
@@ -22,7 +20,7 @@ class ResourceIndex {
   }
 
  private:
-  ConflictFreeVariantHashMap<uint32_t, resource_desc::Object> m_resourceIndex;
+  VariantHashMap<Identifier, IdentifierHash, resource_desc::Object, resource_desc::Texture> m_resourceIndex;
 };
 
 inline auto getResourceIndex() -> ResourceIndex * {

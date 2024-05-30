@@ -7,8 +7,11 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include "../resource_manager/resource_descriptions.hpp"
 #include "../resource_manager/resource_index.hpp"
 #include "../resource_manager/resource_manager.hpp"
+#include "assimp/material.h"
+#include "assimp/types.h"
 #include "mesh.hpp"
 #include "phong_material.hpp"
 #include "renderable.hpp"
@@ -35,7 +38,9 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
   }
 
   auto pResourceManager = getResourceManager();
+  auto pResourceIndex = getResourceIndex();
   Node root;
+  auto pEmptyTexture = pResourceManager->getTexture("EmberEmptyTexture"_id);
 
   // load materials
   for (size_t i = 0; i < scene->mNumMaterials; i++) {
@@ -43,13 +48,29 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
 
     std::string materialName = "EmberMaterial_";
     materialName += pMaterial->GetName().C_Str();
-
     std::cout << "Loading Material: " << materialName << '\n';
     auto materialNameHash = hash(materialName.c_str());
 
     auto pCachedMaterial = pResourceManager->getMaterial(materialNameHash);
     if (!pCachedMaterial) {
       auto pEmberMaterial = std::make_unique<PhongMaterial>();
+
+      // TODO: support multiple diffuse textures
+      auto diffuseTexCnt = pMaterial->GetTextureCount(aiTextureType_DIFFUSE);
+      if (diffuseTexCnt > 0) {
+        aiString texturePath;
+        pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
+        auto textureName = materialName + "_diffuseTexture";
+        std::cout << "Diffuse texture: " << textureName << '\n';
+        auto textureNameHash = hash(textureName.c_str());
+
+        resource_desc::Texture textureDescription = {materialNameHash, textureName, resource_desc::TextureType::Diffuse,
+                                                     texturePath.C_Str()};
+        pResourceIndex->setDescription(textureNameHash, textureDescription);
+        pEmberMaterial->setTexture(pResourceManager->getTexture(textureNameHash));
+      } else {
+        pEmberMaterial->setTexture(pEmptyTexture);
+      }
 
       aiColor3D ambientK, diffuseK, specularK;
       float shininessK;
@@ -78,23 +99,24 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
     }
   }
 
-  for (size_t meshInd = 0; meshInd < 8; meshInd++) {
+  for (size_t meshInd = 0; meshInd < scene->mNumMeshes; meshInd++) {
     auto pMesh = scene->mMeshes[meshInd];
 
     std::string meshName = "EmberMesh_";
     meshName += pMesh->mName.C_Str();
 
-    std::cout << "Loading Mesh: " << meshName << '\n';
     auto meshNameHash = hash(meshName.c_str());
     auto pEmberMesh = pResourceManager->getMesh(meshNameHash);
     if (!pEmberMesh) {
-      std::vector<PosNormVertex> vertices;
+      std::vector<PosNormUvVertex> vertices;
       std::vector<uint32_t> indices;
 
       for (size_t i = 0; i < pMesh->mNumVertices; i++) {
         auto vertex = pMesh->mVertices[i];
         auto normal = pMesh->mNormals[i];
-        vertices.emplace_back(glm::vec3(vertex.x, vertex.y, vertex.z), glm::vec3(normal.x, normal.y, normal.z));
+        auto uv = pMesh->mTextureCoords[0][i];
+        vertices.emplace_back(glm::vec3(vertex.x, vertex.y, vertex.z), glm::vec3(normal.x, normal.y, normal.z),
+                              glm::vec2(uv.x, uv.y));
       }
 
       for (size_t i = 0; i < pMesh->mNumFaces; i++) {
@@ -104,7 +126,7 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
         }
       }
 
-      Mesh emberMesh(std::span<PosNormVertex>{vertices}, indices);
+      Mesh emberMesh(std::span<PosNormUvVertex>{vertices}, indices);
       pResourceManager->moveMesh(meshNameHash, std::move(emberMesh));
       pEmberMesh = pResourceManager->getMesh(meshNameHash);
     }

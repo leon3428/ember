@@ -1,6 +1,5 @@
-#include <cstddef>
 #include <iostream>
-#include <vector>
+#include <format>
 
 // clang-format off
 #include <glad/glad.h>
@@ -11,7 +10,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "ember.hpp"
-#include "glm/ext/quaternion_common.hpp"
 
 int main(int, char *argv[]) {
   std::cout << argv[0] << ' ' << argv[1] << std::endl;
@@ -26,7 +24,7 @@ int main(int, char *argv[]) {
     ember::Window window("Ember", width, height);
     ember::RenderEngine renderEngine(window);
 
-    ember::PerspectiveCamera camera(glm::radians(45.0f), 0.1f, 100.0f);
+    ember::PerspectiveCamera camera(glm::radians(45.0f), 0.1f, 200.0f);
     ember::FpsCameraController cameraController(&camera, window);
     camera.position.z = 10;
     renderEngine.setCamera(&camera);
@@ -34,17 +32,19 @@ int main(int, char *argv[]) {
     auto scene = ember::Node();
 
     auto pLight = scene.emplaceChild<ember::Light>();
-    pLight->ambientIntensity = {1.0f, 1.0f, 1.0f, 1.0f};
-    pLight->diffuseIntensity = {1.0f, 1.0f, 1.0f, 1.0f};
-    pLight->specularIntensity = {1.0f, 1.0f, 1.0f, 1.0f};
+    pLight->ambientIntensity = {0.3f, 0.3f, 0.3f, 1.0f};
+    pLight->diffuseIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
+    pLight->specularIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
+    pLight->position.y = -8;
+    pLight->position.z = 5;
 
     auto headNode = ember::loadObject("robotScene"_id);
-    auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
+    //auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
     scene.steal(headNode);
 
-    ember::ObjectController objController(pHead, window);
+    ember::ObjectController objController(pLight, window);
 
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
     auto prevTime = std::chrono::high_resolution_clock::now();
 
@@ -56,6 +56,9 @@ int main(int, char *argv[]) {
       objController.update(deltaTime);
       cameraController.update(deltaTime);
       renderEngine.render(&scene);
+
+      window.setTitle(std::format("FPS: {}, Frame Time: {}ms", 1000 / deltaTime, deltaTime));
+      //std::cout << pLight->position.x <<  ' ' << pLight->position.y << ' ' << pLight->position.z << '\n';
 
       window.update();
     }

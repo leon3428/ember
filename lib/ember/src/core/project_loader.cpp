@@ -38,6 +38,10 @@ auto ember::project::load(std::filesystem::path path) -> void {
         auto objectDesc = resource_desc::load<resource_desc::Object>(resource);
         objectDesc.path = path / objectDesc.path;
         resourceIndex->setDescription(nameHash, objectDesc);
+      } else if(strcmp(type, "texture") == 0) {
+        auto textureDesc = resource_desc::load<resource_desc::Texture>(resource);
+        textureDesc.path = path / textureDesc.path;
+        resourceIndex->setDescription(nameHash, textureDesc);
       }
     }
   }

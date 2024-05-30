@@ -1,6 +1,7 @@
 #include "render_engine.hpp"
 
 #include <glad/glad.h>
+#include <array>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -8,6 +9,7 @@
 #include "light.hpp"
 #include "node.hpp"
 #include "renderable.hpp"
+#include "texture.hpp"
 #include "uniform_buffer.hpp"
 
 #ifdef NDEBUG
@@ -123,11 +125,18 @@ ember::RenderEngine::RenderEngine(Window &window) : m_window(window), m_drawAxis
 
   getResourceManager()->moveMesh("axisMesh"_id, std::move(mesh));
 
+  constexpr int size = 8;
+  std::array<unsigned char, size * size * 3> emptyTextureData;
+  for (auto &v : emptyTextureData) v = 255;
+  Texture emptyTexture(size, size, emptyTextureData.data());
+  getResourceManager()->moveTexture("EmberEmptyTexture"_id, std::move(emptyTexture));
+
+  glEnable(GL_MULTISAMPLE);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glEnable(GL_DEPTH_TEST);
 
-  m_pLightUniformBuffer = std::make_unique<UniformBuffer>(&m_lightData, 2, GL_DYNAMIC_DRAW );
+  m_pLightUniformBuffer = std::make_unique<UniformBuffer>(&m_lightData, 2, GL_DYNAMIC_DRAW);
 }
 
 auto ember::RenderEngine::render(const Node *pScene) -> void {
@@ -155,7 +164,7 @@ auto ember::RenderEngine::m_renderHelper(const Node *pNode) -> void {
   } else if (pNode->is(NodeAttribute::Renderable)) {
     auto pRenderable = static_cast<const Renderable *>(pNode);
 
-    pRenderable->pMaterial->bindProgram();
+    pRenderable->pMaterial->bind();
     pRenderable->pVertexArray->bind();
     pRenderable->pMaterial->uploadUniforms();
 
@@ -171,9 +180,7 @@ auto ember::RenderEngine::m_renderHelper(const Node *pNode) -> void {
     }
   }
 
-  auto i = 0;
   for (auto pChild : *pNode) {
-    std::cout << i++ << '\n';
     m_renderHelper(pChild);
   }
 }

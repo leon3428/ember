@@ -4,11 +4,25 @@
 #include <rapidjson/document.h>
 #include <filesystem>
 #include <string>
+#include "../core/utils.hpp"
 
 namespace ember::resource_desc {
 
 struct Object {
+  ember::Identifier parent;
   std::string name;
+  std::filesystem::path path;
+};
+
+enum class TextureType {
+  Unknown,
+  Diffuse
+};
+
+struct Texture {
+  ember::Identifier parent;
+  std::string name;
+  TextureType textureType;
   std::filesystem::path path;
 };
 
@@ -17,6 +31,9 @@ auto load(const rapidjson::Value &value) -> T;
 
 template <>
 auto load<Object>(const rapidjson::Value &value) -> Object;
+
+template <>
+auto load<Texture>(const rapidjson::Value &value) -> Texture;
 
 }  // namespace ember::resource_desc
 

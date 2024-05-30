@@ -24,6 +24,14 @@ struct PosNormVertex {
   static auto vertexAttrib() -> void;
 };
 
+struct PosNormUvVertex {
+  glm::vec3 pos;
+  glm::vec3 norm;
+  glm::vec2 texCoord;
+
+  static auto vertexAttrib() -> void;
+};
+
 struct PosColVertex {
   glm::vec3 pos;
   glm::vec3 col;

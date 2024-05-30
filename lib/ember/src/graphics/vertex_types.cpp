@@ -20,6 +20,20 @@ auto ember::PosNormVertex::vertexAttrib() -> void {
   glEnableVertexAttribArray(1);
 }
 
+auto ember::PosNormUvVertex::vertexAttrib() -> void {
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(PosNormUvVertex),
+                        reinterpret_cast<void *>(offsetof(PosNormUvVertex, pos)));
+  glEnableVertexAttribArray(0);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(PosNormUvVertex),
+                        reinterpret_cast<void *>(offsetof(PosNormUvVertex, norm)));
+  glEnableVertexAttribArray(1);
+
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(PosNormUvVertex),
+                        reinterpret_cast<void *>(offsetof(PosNormUvVertex, texCoord)));
+  glEnableVertexAttribArray(2);
+}
+
 auto ember::PosColVertex::vertexAttrib() -> void {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(PosColVertex),
                         reinterpret_cast<void *>(offsetof(PosColVertex, pos)));

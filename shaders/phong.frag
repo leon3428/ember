@@ -2,6 +2,7 @@
 
 in vec3 normal;
 in vec3 viewPos;
+in vec2 texCoord;
 
 out vec4 FragColor;
 
@@ -9,6 +10,8 @@ uniform vec3 u_ambientColor;
 uniform vec3 u_diffuseColor;
 uniform vec3 u_specularColor;
 uniform float u_shininess;
+
+uniform sampler2D diffuseTexture;
 
 struct LightData {
   vec4 ambientIntensity;
@@ -29,8 +32,10 @@ void main()
   vec3 r = reflect(-l, norm);  
   vec3 v = normalize(viewPos);
 
-  vec3 Ia = lightData.ambientIntensity.xyz * u_ambientColor;
-  vec3 Id = lightData.diffuseIntensity.xyz * u_diffuseColor * max(dot(-l, norm), 0.0);
+  vec3 texColor = texture(diffuseTexture, texCoord).xyz;
+
+  vec3 Ia = lightData.ambientIntensity.xyz * u_ambientColor * texColor;
+  vec3 Id = lightData.diffuseIntensity.xyz * u_diffuseColor * texColor * max(dot(-l, norm), 0.0);
   vec3 Is = lightData.specularIntensity.xyz * u_specularColor * pow(max(dot(v, r), 0.0), u_shininess);
 
   FragColor = vec4(Ia + Id + Is, 1.0f);

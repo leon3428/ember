@@ -2,22 +2,20 @@
 #define RESOURCE_MANAGER_HPP
 
 #include <memory>
-#include "../core/conflict_free_variant_hash_map.hpp"
+#include "../core/variant_hash_map.hpp"
 #include "../core/utils.hpp"
 #include "../graphics/material.hpp"
 #include "../graphics/mesh.hpp"
+#include "../graphics/texture.hpp"
 #include "../graphics/shader_program.hpp"
 
 namespace ember {
 
 class ResourceManager {
  public:
-  ResourceManager();
-
   [[nodiscard]] auto getShaderProgram(Identifier idn) -> ShaderProgram *;
-  inline auto moveShaderProgram(Identifier idn, ShaderProgram &&shaderProgram) -> ShaderProgram * {
+  inline auto moveShaderProgram(Identifier idn, ShaderProgram &&shaderProgram) -> void {
     m_resourceCache.set<ShaderProgram>(idn, std::move(shaderProgram));
-    return m_resourceCache.get<ShaderProgram>(idn);
   }
 
   [[nodiscard]] auto getMesh(Identifier idn) -> Mesh *;
@@ -26,20 +24,20 @@ class ResourceManager {
     return m_resourceCache.get<Mesh>(idn);
   }
 
-  [[nodiscard]] inline auto getMaterial(Identifier idn) -> Material * {
-    auto p = m_resourceCache.get<std::unique_ptr<Material>>(idn);
-    if (p) return p->get();
-    return nullptr;
-  }
-  inline auto moveMaterial(Identifier idn, std::unique_ptr<Material> &&material) -> Material * {
+  [[nodiscard]] auto getMaterial(Identifier idn) -> Material *;
+  inline auto moveMaterial(Identifier idn, std::unique_ptr<Material> &&material) -> void {
     m_resourceCache.set<std::unique_ptr<Material>>(idn, std::move(material));
-    return m_resourceCache.get<std::unique_ptr<Material>>(idn)->get();
+  }
+
+  [[nodiscard]] auto getTexture(Identifier idn) -> Texture *;
+  inline auto moveTexture(Identifier idn, Texture &&texture) -> void{
+    m_resourceCache.set<Texture>(idn, std::move(texture));
   }
 
   inline auto clear() -> void { m_resourceCache.clear(); }
 
  private:
-  ConflictFreeVariantHashMap<uint32_t, ShaderProgram, Mesh, std::unique_ptr<Material>> m_resourceCache;
+  VariantHashMap<Identifier, IdentifierHash, ShaderProgram, Mesh, Texture, std::unique_ptr<Material>> m_resourceCache;
 };
 
 inline auto getResourceManager() -> ResourceManager * {

@@ -6,9 +6,10 @@ set(PROJECT_HEADERS
     src/core/key_codes.hpp
     src/core/mouse_button_codes.hpp
     src/core/window.hpp
-    src/core/conflict_free_variant_hash_map.hpp
+    src/core/variant_hash_map.hpp
     src/core/project_loader.hpp
     src/core/bezier.hpp
+    src/core/image.hpp
 
     src/graphics/node.hpp
     src/graphics/object3d.hpp
@@ -39,6 +40,8 @@ set(PROJECT_HEADERS
     src/graphics/object_loader.hpp
     src/graphics/object_controller.hpp
     src/graphics/light.hpp
+    src/graphics/texture.hpp
+    src/graphics/texture_loader.hpp
 
     src/resource_manager/resource_descriptions.hpp
     src/resource_manager/resource_manager.hpp
@@ -50,6 +53,7 @@ set(PROJECT_SOURCES
     src/core/window.cpp
     src/core/project_loader.cpp
     src/core/bezier.cpp
+    src/core/image.cpp
 
     src/graphics/node.cpp
     src/graphics/object3d.cpp
@@ -79,15 +83,16 @@ set(PROJECT_SOURCES
     src/graphics/object_loader.cpp
     src/graphics/object_controller.cpp
     src/graphics/light.cpp
+    src/graphics/texture.cpp
+    src/graphics/texture_loader.cpp
 
     src/resource_manager/resource_descriptions.cpp
     src/resource_manager/resource_manager.cpp
-    src/resource_manager/resource_index.cpp
 )
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNDEBUG")
 
 add_library(${PROJECT_NAME}_lib STATIC ${PROJECT_SOURCES} ${PROJECT_HEADERS})
 target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wall -Wextra -Wpedantic -Werror -std=c++20)
-target_link_libraries(${PROJECT_NAME}_lib glad glfw glm assimp rapidjson)
+target_link_libraries(${PROJECT_NAME}_lib glad glfw glm assimp rapidjson stb_image_lib)
 target_include_directories(${PROJECT_NAME}_lib  PRIVATE ../../external)

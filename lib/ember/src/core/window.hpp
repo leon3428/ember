@@ -56,7 +56,7 @@ class Window {
   [[nodiscard]] auto getMousePos() const -> std::tuple<float, float>;
   [[nodiscard]] auto getSize() const -> std::tuple<int, int>;
   [[nodiscard]] inline auto getScrollDist() const { return m_scrollDist; }
-
+  inline auto setTitle(std::string_view title) -> void { glfwSetWindowTitle(m_pWindow, title.data()); }
 
   friend auto scrollCallback(GLFWwindow *, double, double) -> void;
 
