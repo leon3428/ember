@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "ember.hpp"
+#include "glm/fwd.hpp"
 
 int main(int, char *argv[]) {
   std::cout << argv[0] << ' ' << argv[1] << std::endl;
@@ -26,7 +27,6 @@ int main(int, char *argv[]) {
 
     ember::PerspectiveCamera camera(glm::radians(45.0f), 0.1f, 200.0f);
     ember::FpsCameraController cameraController(&camera, window);
-    camera.position.z = 10;
     renderEngine.setCamera(&camera);
 
     auto scene = ember::Node();
@@ -38,30 +38,33 @@ int main(int, char *argv[]) {
     pLight->position.y = -8;
     pLight->position.z = 5;
 
-    auto headNode = ember::loadObject("box"_id);
-    // auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
+    auto headNode = ember::loadObject("robotScene"_id);
     scene.steal(headNode);
-
-    ember::ObjectController objController(pLight, window);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-    auto prevTime = std::chrono::high_resolution_clock::now();
+    auto startTime = std::chrono::high_resolution_clock::now();
 
-    while (!window.shouldClose()) {
-      auto time = std::chrono::high_resolution_clock::now();
-      auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(time - prevTime).count() / 1000.0f;
-      prevTime = time;
+    ember::Circle cameraCurve(40.0f);
+    glm::vec3 origin = {0.0f, 0.0f, 0.0f};
+    int numFrames = 100;
 
-      objController.update(deltaTime);
-      cameraController.update(deltaTime);
+    for (int i = 0; i < numFrames && !window.shouldClose(); i++) {
+      auto pos = cameraCurve.getPosition(static_cast<float>(i) / static_cast<float>(numFrames - 1));
+      camera.position.x = pos(0);
+      camera.position.y = -20;
+      camera.position.z = pos(2);
+      camera.lookAt(origin);
+
       renderEngine.render(&scene);
-
-      window.setTitle(std::format("FPS: {}, Frame Time: {}ms", 1000 / deltaTime, deltaTime));
-      // std::cout << pLight->position.x <<  ' ' << pLight->position.y << ' ' << pLight->position.z << '\n';
-
       window.update();
     }
+
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count() / 1000.0f;
+    auto avgFrameTime = deltaTime / static_cast<float>(numFrames);
+    std::cout << std::format("Average FPS: {:.2f}, Average Frame Time: {:.2f}ms\n", 1000.0f / avgFrameTime,
+                             avgFrameTime);
 
     resourceManager->clear();
   }

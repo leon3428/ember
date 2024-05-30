@@ -12,8 +12,8 @@ auto ember::FpsCameraController::update(float deltaTime) -> void {
   auto [mouseX, mouseY] = m_window.getMousePos();
 
   auto rotMat = glm::mat4_cast(m_camera->rotation);
-  auto right = glm::vec3(rotMat[0][0], rotMat[1][0], rotMat[2][0]);    // First column
-  auto forward = glm::vec3(rotMat[0][2], rotMat[1][2], rotMat[2][2]);  // Third column
+  auto right = glm::vec3(rotMat[0][0], rotMat[0][1], rotMat[0][2]);    // First row
+  auto forward = glm::vec3(rotMat[2][0], rotMat[2][1], rotMat[2][2]);  // Third row
 
   if (m_window.isKeyPressed(KeyCode::KeyW)) {
     m_camera->position -= (m_moveSpeed * deltaTime) * forward;
@@ -35,12 +35,12 @@ auto ember::FpsCameraController::update(float deltaTime) -> void {
   }
 
   if (m_window.isMouseButtonPressed(ember::MouseButtonCode::MouseButtonLeft)) {
-    float xAngle = (mouseX - m_lastMouseX) * -m_turnSpeed * deltaTime;
-    float yAngle = (mouseY - m_lastMouseY) * m_turnSpeed * deltaTime;
+    float xAngle = (mouseX - m_lastMouseX) * m_turnSpeed * deltaTime;
+    float yAngle = (mouseY - m_lastMouseY) * -m_turnSpeed * deltaTime;
 
     auto q1 = glm::angleAxis(xAngle, yAxis);
     auto q2 = glm::angleAxis(yAngle, xAxis);
-    m_camera->rotation = q2 * m_camera->rotation * q1;
+    m_camera->rotation = q1 * m_camera->rotation * q2;
   }
 
   m_lastMouseX = mouseX;

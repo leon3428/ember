@@ -1,9 +1,9 @@
-#ifndef BEZIER_NODE_HPP
-#define BEZIER_NODE_HPP
+#ifndef CURVE_NODE_HPP
+#define CURVE_NODE_HPP
 
 #include <glm/glm.hpp>
 #include <vector>
-#include "../core/bezier.hpp"
+#include "../core/curve.hpp"
 #include "dynamic_line_strip.hpp"
 #include "glm/fwd.hpp"
 #include "object3d.hpp"
@@ -13,15 +13,15 @@
 
 namespace ember {
 
-class BezierNode : public Object3d {
+class CurveNode : public Object3d {
  public:
-  BezierNode(const Bezier &bezier, size_t numSamples);
+  CurveNode(const ICurve *pCurve, size_t numSamples);
 
   auto update() -> void;
   inline auto setColor(glm::vec4 color) { m_curveMaterial.color = color; }
 
  private:
-  const Bezier &m_bezier;
+  const ICurve *m_pCurve;
   size_t m_numSamples;
 
   std::vector<PosVertex> m_points;
@@ -33,4 +33,4 @@ class BezierNode : public Object3d {
 
 }  // namespace ember
 
-#endif  // BEZIER_NODE_HPP
+#endif  // CURVE_NODE_HPP

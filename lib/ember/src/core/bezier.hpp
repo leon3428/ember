@@ -2,16 +2,17 @@
 #define BEZIER_HPP
 
 #include <eigen3/Eigen/Dense>
+#include "curve.hpp"
 
 namespace ember {
 
 auto BernsteinWeightFunction(int n, int i, float t) -> float;
 
-class Bezier {
+class Bezier : public ICurve {
  public:
   auto addControlPoint(Eigen::Vector3f p) -> void;
   auto addInterpolatedPoint(Eigen::Vector3f p) -> void;
-  auto getPosition(float t) const -> Eigen::Vector3f;
+  virtual auto getPosition(float t) const -> Eigen::Vector3f override;
 
   [[nodiscard]] inline auto getControlPoints() const -> const Eigen::MatrixXf & { return m_controlPoints; }
   [[nodiscard]] inline auto getInterpolatedPoints() const -> const Eigen::MatrixXf & { return m_interpolationPoints; }

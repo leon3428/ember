@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include "material.hpp"
+#include "texture.hpp"
 
 namespace ember {
 class PhongMaterial : public Material {
@@ -18,7 +19,22 @@ class PhongMaterial : public Material {
   virtual auto uploadMvp(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const
       -> void override;
 
+  inline auto setTexture(const Texture *pTexture) { m_pTexture = pTexture; }
+
+  virtual inline auto bind() const -> void override {
+    m_pShaderProgram->bind();
+    m_pTexture->bind();
+  }
+
+  virtual inline auto unbind() const -> void override {
+    m_pShaderProgram->unbind();
+    m_pTexture->unbind();
+  }
+
  private:
+  // TODO: more than one texture
+  const Texture *m_pTexture;
+
   int m_ambientColorLocation;
   int m_diffuseColorLocation;
   int m_specularColorLocation;

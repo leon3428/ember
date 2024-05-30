@@ -40,7 +40,6 @@ ember::Window::Window(std::string_view name, int width, int height) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwSwapInterval(0);
 
 #ifdef __APPLE__
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -53,6 +52,7 @@ ember::Window::Window(std::string_view name, int width, int height) {
   glfwMakeContextCurrent(m_pWindow);
   glfwSetWindowUserPointer(m_pWindow, this);
 
+  // glfwSwapInterval(0);
   glfwSetKeyCallback(m_pWindow, keyCallback);
   glfwSetFramebufferSizeCallback(m_pWindow, resizeCallback);
   glfwSetMouseButtonCallback(m_pWindow, mouseButtonCallback);
