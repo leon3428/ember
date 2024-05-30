@@ -171,7 +171,9 @@ auto ember::RenderEngine::m_renderHelper(const Node *pNode) -> void {
     }
   }
 
+  auto i = 0;
   for (auto pChild : *pNode) {
+    std::cout << i++ << '\n';
     m_renderHelper(pChild);
   }
 }

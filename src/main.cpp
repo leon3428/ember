@@ -38,7 +38,7 @@ int main(int, char *argv[]) {
     pLight->diffuseIntensity = {1.0f, 1.0f, 1.0f, 1.0f};
     pLight->specularIntensity = {1.0f, 1.0f, 1.0f, 1.0f};
 
-    auto headNode = ember::loadObject("headObject"_id);
+    auto headNode = ember::loadObject("robotScene"_id);
     auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
     scene.steal(headNode);
 
