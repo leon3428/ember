@@ -15,21 +15,10 @@ class PhongMaterial : public Material {
   glm::vec3 specularColor;
   float shininess;
 
-  virtual auto uploadUniforms() const -> void override;
-  virtual auto uploadMvp(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const
+  virtual auto uploadUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const
       -> void override;
 
   inline auto setTexture(const Texture *pTexture) { m_pTexture = pTexture; }
-
-  virtual inline auto bind() const -> void override {
-    m_pShaderProgram->bind();
-    m_pTexture->bind();
-  }
-
-  virtual inline auto unbind() const -> void override {
-    m_pShaderProgram->unbind();
-    m_pTexture->unbind();
-  }
 
  private:
   // TODO: more than one texture

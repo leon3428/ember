@@ -47,7 +47,7 @@ int main(int, char *argv[]) {
 
     ember::Circle cameraCurve(40.0f);
     glm::vec3 origin = {0.0f, 0.0f, 0.0f};
-    int numFrames = 100;
+    int numFrames = 1000;
 
     for (int i = 0; i < numFrames && !window.shouldClose(); i++) {
       auto pos = cameraCurve.getPosition(static_cast<float>(i) / static_cast<float>(numFrames - 1));

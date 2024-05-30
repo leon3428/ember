@@ -16,7 +16,7 @@ auto ember::shader_program::load(Identifier idn) -> ember::ShaderProgram {
     };
     // clang-format on
 
-    return {solidColorShaders};
+    return {solidColorShaders, 0};
   }
   if (idn == "vertexColor"_id) {
     // clang-format off
@@ -26,7 +26,7 @@ auto ember::shader_program::load(Identifier idn) -> ember::ShaderProgram {
     };
     // clang-format on
 
-    return {vertexColorShaders};
+    return {vertexColorShaders, 1};
   }
 
   if (idn == "phongShaderProgram"_id) {
@@ -37,7 +37,7 @@ auto ember::shader_program::load(Identifier idn) -> ember::ShaderProgram {
     };
     // clang-format on
 
-    return {shaders};
+    return {shaders, 2};
   }
 
   throw std::runtime_error("Invalid shader program identifier");

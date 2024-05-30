@@ -2,8 +2,10 @@
 #define SHADER_PROGRAM_HPP
 
 #include <glad/glad.h>
+#include <cstdint>
 #include <span>
 
+#include "index_buffer.hpp"
 #include "shader.hpp"
 
 namespace ember {
@@ -12,7 +14,7 @@ class ShaderProgram {
  public:
   static constexpr unsigned errorMessageLength = 512;
 
-  ShaderProgram(std::span<Shader> shaders);
+  ShaderProgram(std::span<Shader> shaders, uint32_t emberId);
 
   ~ShaderProgram();
 
@@ -25,11 +27,12 @@ class ShaderProgram {
   inline auto bind() const { glUseProgram(m_shaderProgramId); };
   inline auto unbind() const { glUseProgram(0); };
 
-  // TODO: remove this
   [[nodiscard]] inline auto getShaderProgramId() const { return m_shaderProgramId; };
+  [[nodiscard]] inline auto getEmberId() const { return m_emberId; }
 
  private:
   uint32_t m_shaderProgramId;
+  uint32_t m_emberId;
 };
 }  // namespace ember
 

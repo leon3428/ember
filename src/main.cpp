@@ -1,3 +1,4 @@
+#include <chrono>
 #include <format>
 #include <iostream>
 
@@ -8,6 +9,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <thread>
 
 #include "ember.hpp"
 
@@ -42,6 +44,9 @@ int main(int, char *argv[]) {
     auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
     scene.steal(headNode);
 
+    ember::Circle cameraCurve(5.0f);
+    scene.emplaceChild<ember::CurveNode>(&cameraCurve, 50);
+
     ember::ObjectController objController(pHead, window);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -51,6 +56,12 @@ int main(int, char *argv[]) {
     while (!window.shouldClose()) {
       auto time = std::chrono::high_resolution_clock::now();
       auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(time - prevTime).count() / 1000.0f;
+      if (deltaTime < 10) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10 - static_cast<int>(deltaTime)));
+        time = std::chrono::high_resolution_clock::now();
+        deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(time - prevTime).count() / 1000.0f;
+      }
+
       prevTime = time;
 
       objController.update(deltaTime);

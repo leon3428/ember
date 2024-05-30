@@ -10,6 +10,8 @@ ember::CurveNode::CurveNode(const ICurve *pCurve, size_t numSamples)
   m_pCurveRenderable->pMaterial = &m_curveMaterial;
   m_pCurveRenderable->vertexCnt = 0;
   m_pCurveRenderable->byteOffset = 0;
+
+  update();
 }
 
 auto ember::CurveNode::update() -> void {

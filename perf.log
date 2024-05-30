@@ -1,4 +1,8 @@
 Baseline:
-  Average FPS: 17.90, Average Frame Time: 55.87ms
-Transform cache:
-  Average FPS: 18.98, Average Frame Time: 52.69ms
+  Average FPS: 25.94, Average Frame Time: 38.56ms
+
+After moving to queue:
+  Average FPS: 441.03, Average Frame Time: 2.27ms
+
+After sorting based on shader program:
+  Average FPS: 1589.28, Average Frame Time: 0.63ms

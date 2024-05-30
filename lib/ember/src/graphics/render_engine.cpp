@@ -1,8 +1,10 @@
 #include "render_engine.hpp"
 
 #include <glad/glad.h>
+#include <algorithm>
 #include <array>
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <stdexcept>
 #include "../resource_manager/resource_manager.hpp"
@@ -95,7 +97,13 @@ void glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity,
 
 #endif
 
-ember::RenderEngine::RenderEngine(Window &window) : m_window(window), m_drawAxis(false) {
+ember::RenderCommand::RenderCommand(const Renderable *pRenderable) : m_cmd(0), m_pRenderable(pRenderable) {
+  m_cmd = pRenderable->pMaterial->getEmberId();
+}
+
+auto ember::RenderCommand::getProgram() const -> uint32_t { return m_cmd; }
+
+ember::RenderEngine::RenderEngine(Window &window) : m_window(window) {
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     throw std::runtime_error("Failed to initialize GLAD");
   }
@@ -154,23 +162,24 @@ auto ember::RenderEngine::render(const Node *pScene) -> void {
   glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightData), &m_lightData);
   m_pLightUniformBuffer->unbind();
 
-  m_renderHelper(pScene);
-}
+  auto [width, height] = m_window.getSize();
+  auto viewMat = m_pCamera->getViewMatrix();
+  auto projectionMat = m_pCamera->getProjectionMatrix(width, height);
 
-auto ember::RenderEngine::m_renderHelper(const Node *pNode) -> void {
-  if (pNode->is(NodeAttribute::Light)) {
-    // TODO: fix this
+  m_renderQueue.clear();
+  m_populateQueue(pScene);
+  std::sort(m_renderQueue.begin(), m_renderQueue.end());
 
-  } else if (pNode->is(NodeAttribute::Renderable)) {
-    auto pRenderable = static_cast<const Renderable *>(pNode);
+  uint32_t lastShaderProgram = std::numeric_limits<uint32_t>::max();
 
-    pRenderable->pMaterial->bind();
+  for (auto &cmd : m_renderQueue) {
+    auto pRenderable = cmd.getRenderable();
+    if (cmd.getProgram() != lastShaderProgram) {
+      lastShaderProgram = cmd.getProgram();
+      pRenderable->pMaterial->bindProgram();
+    }
+    pRenderable->pMaterial->uploadUniforms(pRenderable->getMatrix(), viewMat, projectionMat);
     pRenderable->pVertexArray->bind();
-    pRenderable->pMaterial->uploadUniforms();
-
-    auto [width, height] = m_window.getSize();
-    pRenderable->pMaterial->uploadMvp(pRenderable->getMatrix(), m_pCamera->getViewMatrix(),
-                                      m_pCamera->getProjectionMatrix(width, height));
 
     if (pRenderable->pVertexArray->isIndexed()) {
       glDrawElements(pRenderable->pVertexArray->getPrimitiveType(), pRenderable->vertexCnt, GL_UNSIGNED_INT,
@@ -179,10 +188,18 @@ auto ember::RenderEngine::m_renderHelper(const Node *pNode) -> void {
       glDrawArrays(pRenderable->pVertexArray->getPrimitiveType(), 0, pRenderable->vertexCnt);
     }
   }
-
-  for (auto pChild : *pNode) {
-    m_renderHelper(pChild);
-  }
 }
 
-auto ember::RenderEngine::wireframeMode() -> void { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); }
+auto ember::RenderEngine::m_populateQueue(const Node *pNode) -> void {
+  if (pNode->is(NodeAttribute::Light)) {
+    // TODO: fix this
+
+  } else if (pNode->is(NodeAttribute::Renderable)) {
+    auto pRenderable = static_cast<const Renderable *>(pNode);
+    m_renderQueue.emplace_back(pRenderable);
+  }
+
+  for (auto pChild : *pNode) {
+    m_populateQueue(pChild);
+  }
+}

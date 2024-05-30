@@ -19,14 +19,7 @@ ember::PhongMaterial::PhongMaterial()
       m_pLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_p")),
       m_normMatLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_normMat")) {}
 
-auto ember::PhongMaterial::uploadUniforms() const -> void {
-  glUniform3fv(m_ambientColorLocation, 1, &ambientColor[0]);
-  glUniform3fv(m_diffuseColorLocation, 1, &diffuseColor[0]);
-  glUniform3fv(m_specularColorLocation, 1, &specularColor[0]);
-  glUniform1f(m_shininessLocation, shininess);
-}
-
-auto ember::PhongMaterial::uploadMvp(const glm::mat4 &model, const glm::mat4 &view,
+auto ember::PhongMaterial::uploadUniforms(const glm::mat4 &model, const glm::mat4 &view,
                                             const glm::mat4 &projection) const -> void {
   auto mv = view * model;
   auto normMat = glm::mat3(glm::transpose(glm::inverse(mv)));
@@ -34,4 +27,11 @@ auto ember::PhongMaterial::uploadMvp(const glm::mat4 &model, const glm::mat4 &vi
   glUniformMatrix4fv(m_mvLocation, 1, GL_FALSE, glm::value_ptr(mv));
   glUniformMatrix4fv(m_pLocation, 1, GL_FALSE, glm::value_ptr(projection));
   glUniformMatrix3fv(m_normMatLocation, 1, GL_FALSE, glm::value_ptr(normMat));
+
+  glUniform3fv(m_ambientColorLocation, 1, &ambientColor[0]);
+  glUniform3fv(m_diffuseColorLocation, 1, &diffuseColor[0]);
+  glUniform3fv(m_specularColorLocation, 1, &specularColor[0]);
+  glUniform1f(m_shininessLocation, shininess);
+
+  m_pTexture->bind();
 }

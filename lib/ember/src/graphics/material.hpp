@@ -17,12 +17,11 @@ class Material {
 
   virtual ~Material() = default;
 
-  virtual inline auto bind() const -> void { m_pShaderProgram->bind(); }
-
-  virtual inline auto unbind() const -> void { m_pShaderProgram->unbind(); }
-
-  virtual inline auto uploadUniforms() const -> void{};
-  virtual inline auto uploadMvp(const glm::mat4 &, const glm::mat4 &, const glm::mat4 &) const -> void{};
+  virtual inline auto bindProgram() const -> void { m_pShaderProgram->bind(); }
+  virtual inline auto unbindProgram() const -> void { m_pShaderProgram->unbind(); }
+  virtual inline auto uploadUniforms(const glm::mat4 &m, const glm::mat4 &v, const glm::mat4 &p) const -> void = 0;
+  [[nodiscard]] inline auto getShaderProgramId() const  { return m_pShaderProgram->getShaderProgramId(); }
+  [[nodiscard]] inline auto getEmberId() const  { return m_pShaderProgram->getEmberId(); }
 
  protected:
   const ShaderProgram *m_pShaderProgram;
