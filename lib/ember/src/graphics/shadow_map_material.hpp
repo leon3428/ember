@@ -1,22 +1,19 @@
-#ifndef SOLID_COLOR_MATERIAL_HPP
-#define SOLID_COLOR_MATERIAL_HPP
+#ifndef SHADOW_MAP_MATERIAL_HPP
+#define SHADOW_MAP_MATERIAL_HPP
 
 #include <glm/glm.hpp>
 #include "material.hpp"
 
 namespace ember {
-class SolidColorMaterial : public Material {
+class ShadowMapMaterial : public Material {
  public:
-  SolidColorMaterial();
 
-  glm::vec4 color;
-
+  ShadowMapMaterial();
   virtual auto uploadUniforms(const glm::mat4 &model, const glm::mat4 &modelInv) const -> void override;
-
+  
  private:
-  int m_colorLocation;
   int m_modelLocation;
 };
 }  // namespace ember
 
-#endif  // SOLID_COLOR_MATERIAL_HPP
+#endif  // SHADOW_MAP_MATERIAL_HPP

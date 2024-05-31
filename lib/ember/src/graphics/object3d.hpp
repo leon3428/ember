@@ -29,10 +29,12 @@ class Object3d : public Node {
   auto setRotation(const glm::quat &rotation) -> void;
 
   auto rotate(const glm::quat &rot) -> void;
+  auto lookAt(glm::vec3 target) -> void;
 
   [[nodiscard]] inline auto getPosition() const { return m_position; }
   [[nodiscard]] inline auto getScale() const { return m_scale; }
   [[nodiscard]] inline auto getRotation() const { return m_rotation; }
+  
 
  private:
   auto m_updateMatrices() const -> void;

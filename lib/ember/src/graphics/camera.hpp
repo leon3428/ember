@@ -12,7 +12,6 @@ class Camera : public Object3d {
 
   [[nodiscard]] virtual auto getProjectionMatrix(int width, int height) const -> glm::mat4 = 0;
   [[nodiscard]] virtual auto getViewMatrix() const -> glm::mat4 = 0;
-  auto lookAt(glm::vec3 target) -> void;
 
  protected:
   ~Camera() = default;

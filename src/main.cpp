@@ -37,17 +37,18 @@ int main(int, char *argv[]) {
     pLight->ambientIntensity = {0.3f, 0.3f, 0.3f, 1.0f};
     pLight->diffuseIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
     pLight->specularIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
-    pLight->setPosY(-8);
-    pLight->setPosZ(5);
+    pLight->setPosY(8);
+    pLight->setPosZ(1);
+    pLight->lookAt({0.0f, 0.0f, -5.0f});
 
-    auto headNode = ember::loadObject("robotScene"_id);
-    auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
+    auto headNode = ember::loadObject("shadowMap2"_id);
+    // auto pCube = static_cast<ember::Renderable *>(headNode.getChild(0));
     scene.steal(headNode);
 
     ember::Circle cameraCurve(5.0f);
     scene.emplaceChild<ember::CurveNode>(&cameraCurve, 50);
 
-    ember::ObjectController objController(pHead, window);
+    ember::ObjectController objController(pLight, window);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -69,7 +70,8 @@ int main(int, char *argv[]) {
       renderEngine.render(&scene);
 
       window.setTitle(std::format("FPS: {}, Frame Time: {}ms", 1000 / deltaTime, deltaTime));
-      // std::cout << pLight->position.x <<  ' ' << pLight->position.y << ' ' << pLight->position.z << '\n';
+      // auto pos = pLight ->getPosition();
+      // std::cout << pos.x << ' ' << pos.y << ' ' << pos.z << '\n';
 
       window.update();
     }

@@ -12,7 +12,7 @@ struct LightData {
 
 struct SceneData {
   mat4 camera_pv;
-  mat4 light_view;
+  mat4 light_pv;
   vec4 viewPos;
   LightData lightData;
 };
@@ -23,5 +23,5 @@ layout(std140, binding = 2) uniform Scene {
 
 void main()
 {
-    gl_Position = sceneData.camera_pv * u_model * vec4(aPos, 1.0);
+    gl_Position = sceneData.light_pv * u_model * vec4(aPos, 1.0);
 }

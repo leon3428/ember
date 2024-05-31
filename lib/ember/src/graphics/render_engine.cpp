@@ -1,17 +1,21 @@
 #include "render_engine.hpp"
 
+#include <GL/gl.h>
+#include <GL/glext.h>
 #include <glad/glad.h>
 #include <algorithm>
 #include <array>
 #include <iostream>
 #include <limits>
-#include <memory>
 #include <stdexcept>
+#include "../config.hpp"
 #include "../resource_manager/resource_manager.hpp"
 #include "glm/ext/quaternion_common.hpp"
+#include "glm/trigonometric.hpp"
 #include "light.hpp"
 #include "node.hpp"
 #include "renderable.hpp"
+#include "stbimage/stb_image_write.hpp"
 #include "texture.hpp"
 #include "uniform_buffer.hpp"
 
@@ -104,24 +108,18 @@ ember::RenderCommand::RenderCommand(const Renderable *pRenderable) : m_cmd(0), m
 
 auto ember::RenderCommand::getProgram() const -> uint32_t { return m_cmd; }
 
-ember::RenderEngine::RenderEngine(Window &window) : m_window(window) {
-  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    throw std::runtime_error("Failed to initialize GLAD");
-  }
-
-  auto [width, height] = window.getSize();
-  glViewport(0, 0, width, height);
-
+ember::RenderEngine::RenderEngine(Window &window)
+    : m_window(window),
+      m_SceneDataUniformBuffer(&m_sceneData, 2, GL_DYNAMIC_DRAW),
+      m_shadowMap({config::shadowMapSize, config::shadowMapSize, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT,
+                   GL_NEAREST, GL_NEAREST, false},
+                  NULL, 0) {
 #ifdef NDEBUG
   glEnable(GL_DEBUG_OUTPUT);
   glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
   glDebugMessageCallback(glDebugOutput, nullptr);
   glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 #endif
-
-  auto &eventBus = window.getEventBus();
-  eventBus.subscribe<ember::ResizeEvent>([](const ember::ResizeEvent &e) { glViewport(0, 0, e.width, e.height); });
-
   std::array<PosColVertex, 6> axisVertices = {ember::PosColVertex({0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}),
                                               ember::PosColVertex({1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}),
                                               ember::PosColVertex({0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}),
@@ -137,7 +135,8 @@ ember::RenderEngine::RenderEngine(Window &window) : m_window(window) {
   constexpr int size = 8;
   std::array<unsigned char, size * size * 3> emptyTextureData;
   for (auto &v : emptyTextureData) v = 255;
-  Texture emptyTexture(size, size, emptyTextureData.data());
+  Texture emptyTexture({size, size, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, true},
+                       emptyTextureData.data(), 1);
   getResourceManager()->moveTexture("EmberEmptyTexture"_id, std::move(emptyTexture));
 
   glEnable(GL_MULTISAMPLE);
@@ -145,32 +144,73 @@ ember::RenderEngine::RenderEngine(Window &window) : m_window(window) {
   glCullFace(GL_BACK);
   glEnable(GL_DEPTH_TEST);
 
-  m_pLightUniformBuffer = std::make_unique<UniformBuffer>(&m_lightData, 2, GL_DYNAMIC_DRAW);
+  glGenFramebuffers(1, &m_shadowMapFBO);
+  glBindFramebuffer(GL_FRAMEBUFFER, m_shadowMapFBO);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadowMap.getTextureId(), 0);
+  glDrawBuffer(GL_NONE);
+  glReadBuffer(GL_NONE);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 auto ember::RenderEngine::render(const Node *pScene) -> void {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
   if (!pScene->getChild(0)->is(NodeAttribute::Light)) throw std::runtime_error("Light not found");
 
-  auto pLight = static_cast<const Light *>(pScene->getChild(0));
-  m_lightData.ambientIntensity = pLight->ambientIntensity;
-  m_lightData.diffuseIntensity = pLight->diffuseIntensity;
-  m_lightData.specularIntensity = pLight->specularIntensity;
-  m_lightData.position = m_pCamera->getViewMatrix() * glm::vec4(pLight->getPosition(), 1.0f);
-
-  m_pLightUniformBuffer->bind();
-  glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(LightData), &m_lightData);
-  m_pLightUniformBuffer->unbind();
-
-  auto [width, height] = m_window.getSize();
-  auto viewMat = m_pCamera->getViewMatrix();
-  auto viewMatInv = glm::inverse(viewMat);
-  auto projectionMat = m_pCamera->getProjectionMatrix(width, height);
-
   m_renderQueue.clear();
+  m_lights.clear();
   m_populateQueue(pScene);
   std::sort(m_renderQueue.begin(), m_renderQueue.end());
+
+  m_uploadSceneData();
+
+  m_shadowPass();
+  m_finalPass();
+}
+
+auto ember::RenderEngine::m_populateQueue(const Node *pNode) -> void {
+  if (pNode->is(NodeAttribute::Light)) {
+    auto pLight = static_cast<const Light *>(pNode);
+    m_lights.push_back(pLight);
+
+  } else if (pNode->is(NodeAttribute::Renderable)) {
+    auto pRenderable = static_cast<const Renderable *>(pNode);
+    m_renderQueue.emplace_back(pRenderable);
+  }
+
+  for (auto pChild : *pNode) {
+    m_populateQueue(pChild);
+  }
+}
+
+auto ember::RenderEngine::m_shadowPass() -> void {
+  glViewport(0, 0, config::shadowMapSize, config::shadowMapSize);
+  glBindFramebuffer(GL_FRAMEBUFFER, m_shadowMapFBO);
+  glClear(GL_DEPTH_BUFFER_BIT);
+
+  m_shadowMapMaterial.bindProgram();
+
+  // render
+  for (auto &cmd : m_renderQueue) {
+    auto pRenderable = cmd.getRenderable();
+
+    m_shadowMapMaterial.uploadUniforms(pRenderable->getMatrix(), pRenderable->getInverse());
+    pRenderable->pVertexArray->bind();
+
+    if (pRenderable->pVertexArray->isIndexed()) {
+      glDrawElements(pRenderable->pVertexArray->getPrimitiveType(), pRenderable->vertexCnt, GL_UNSIGNED_INT,
+                     reinterpret_cast<void *>(pRenderable->byteOffset));
+    } else {
+      glDrawArrays(pRenderable->pVertexArray->getPrimitiveType(), 0, pRenderable->vertexCnt);
+    }
+  }
+
+  m_shadowMapMaterial.unbindProgram();
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+auto ember::RenderEngine::m_finalPass() -> void {
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  auto [width, height] = m_window.getSize();
+  glViewport(0, 0, width, height);
 
   uint32_t lastShaderProgram = std::numeric_limits<uint32_t>::max();
 
@@ -180,10 +220,9 @@ auto ember::RenderEngine::render(const Node *pScene) -> void {
       lastShaderProgram = cmd.getProgram();
       pRenderable->pMaterial->bindProgram();
     }
-    auto transform = viewMat * pRenderable->getMatrix();
-    auto transformInv = pRenderable->getInverse() * viewMatInv;
 
-    pRenderable->pMaterial->uploadUniforms(transform, transformInv, projectionMat);
+    pRenderable->pMaterial->uploadUniforms(pRenderable->getMatrix(), pRenderable->getInverse());
+    m_shadowMap.bind();
     pRenderable->pVertexArray->bind();
 
     if (pRenderable->pVertexArray->isIndexed()) {
@@ -195,16 +234,26 @@ auto ember::RenderEngine::render(const Node *pScene) -> void {
   }
 }
 
-auto ember::RenderEngine::m_populateQueue(const Node *pNode) -> void {
-  if (pNode->is(NodeAttribute::Light)) {
-    // TODO: fix this
+auto ember::RenderEngine::m_uploadSceneData() -> void {
+  // TODO: support multiple lights
+  auto [width, height] = m_window.getSize();
 
-  } else if (pNode->is(NodeAttribute::Renderable)) {
-    auto pRenderable = static_cast<const Renderable *>(pNode);
-    m_renderQueue.emplace_back(pRenderable);
-  }
+  auto pLight = m_lights[0];
+  auto p = glm::perspective(glm::radians(75.0f), 1.0f, 5.5f, 20.5f);
+  m_sceneData.light_pv = p * pLight->getInverse();
 
-  for (auto pChild : *pNode) {
-    m_populateQueue(pChild);
-  }
+  m_sceneData.lightData.ambientIntensity = pLight->ambientIntensity;
+  m_sceneData.lightData.diffuseIntensity = pLight->diffuseIntensity;
+  m_sceneData.lightData.specularIntensity = pLight->specularIntensity;
+  m_sceneData.lightData.position = glm::vec4(pLight->getPosition(), 1.0f);
+
+  auto viewMat = m_pCamera->getViewMatrix();
+  auto projectionMat = m_pCamera->getProjectionMatrix(width, height);
+
+  m_sceneData.camera_pv = projectionMat * viewMat;
+  m_sceneData.viewPos = glm::vec4(m_pCamera->getPosition(), 1.0f);
+
+  m_SceneDataUniformBuffer.bind();
+  glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(SceneData), &m_sceneData);
+  m_SceneDataUniformBuffer.unbind();
 }

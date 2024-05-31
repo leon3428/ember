@@ -6,6 +6,7 @@
 #include "glm/fwd.hpp"
 #include "glm/matrix.hpp"
 #include "node.hpp"
+#include "../core/utils.hpp"
 
 ember::Object3d::Object3d()
     : m_dirty(false), m_position(0.0f), m_scale(1.0f), m_rotation(1.0f, 0.0f, 0.0f, 0.0f), m_mat(1.0f), m_inv(1.0f) {
@@ -53,6 +54,13 @@ auto ember::Object3d::setRotation(const glm::quat &rotation) -> void {
 auto ember::Object3d::rotate(const glm::quat &rot) -> void {
   m_rotation *= rot;
   m_dirty = true;
+}
+
+auto ember::Object3d::lookAt(glm::vec3 target) -> void {
+  auto dir = glm::normalize(target - getPosition());
+
+  auto tmp = glm::quatLookAt(dir, yAxis);
+  setRotation(tmp);
 }
 
 auto ember::Object3d::m_updateMatrices() const -> void {

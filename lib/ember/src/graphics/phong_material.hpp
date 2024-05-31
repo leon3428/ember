@@ -15,7 +15,7 @@ class PhongMaterial : public Material {
   glm::vec3 specularColor;
   float shininess;
 
-  virtual auto uploadUniforms(const glm::mat4 &transform, const glm::mat4 &transformInv, const glm::mat4 &projection) const
+  virtual auto uploadUniforms(const glm::mat4 &model, const glm::mat4 &modelInv) const
       -> void override;
 
   inline auto setTexture(const Texture *pTexture) { m_pTexture = pTexture; }
@@ -28,9 +28,10 @@ class PhongMaterial : public Material {
   int m_diffuseColorLocation;
   int m_specularColorLocation;
   int m_shininessLocation;
-  int m_mvLocation;
-  int m_pLocation;
-  int m_normMatLocation;
+  int m_modelLocation;
+  int m_modelInvLocation;
+  int m_shadowMapLocation;
+  int m_diffuseMapLocation;
 };
 }  // namespace ember
 

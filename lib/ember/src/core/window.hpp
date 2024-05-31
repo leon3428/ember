@@ -1,7 +1,11 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
+// clang-format off
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+// clang-format on
+
 #include <string_view>
 #include "event_bus.hpp"
 #include "key_codes.hpp"

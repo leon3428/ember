@@ -15,23 +15,21 @@ ember::PhongMaterial::PhongMaterial()
       m_diffuseColorLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_diffuseColor")),
       m_specularColorLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_specularColor")),
       m_shininessLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_shininess")),
-      m_mvLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_mv")),
-      m_pLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_p")),
-      m_normMatLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_normMat")) {}
+      m_modelLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_model")),
+      m_modelInvLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_modelInv")),
+      m_shadowMapLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "shadowMap")),
+      m_diffuseMapLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "diffuseTexture")) {}
 
-auto ember::PhongMaterial::uploadUniforms(const glm::mat4 &transform, const glm::mat4 &transformInv,
-                                            const glm::mat4 &projection) const -> void {
-
-  auto normMat = glm::mat3(glm::transpose(transformInv));
-
-  glUniformMatrix4fv(m_mvLocation, 1, GL_FALSE, glm::value_ptr(transform));
-  glUniformMatrix4fv(m_pLocation, 1, GL_FALSE, glm::value_ptr(projection));
-  glUniformMatrix3fv(m_normMatLocation, 1, GL_FALSE, glm::value_ptr(normMat));
+auto ember::PhongMaterial::uploadUniforms(const glm::mat4 &model, const glm::mat4 &modelInv) const -> void {
+  glUniformMatrix4fv(m_modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+  glUniformMatrix4fv(m_modelInvLocation, 1, GL_FALSE, glm::value_ptr(modelInv));
 
   glUniform3fv(m_ambientColorLocation, 1, &ambientColor[0]);
   glUniform3fv(m_diffuseColorLocation, 1, &diffuseColor[0]);
   glUniform3fv(m_specularColorLocation, 1, &specularColor[0]);
   glUniform1f(m_shininessLocation, shininess);
+  glUniform1i(m_shadowMapLocation, 0);
+  glUniform1i(m_diffuseMapLocation, 1);
 
   m_pTexture->bind();
 }

@@ -40,5 +40,16 @@ auto ember::shader_program::load(Identifier idn) -> ember::ShaderProgram {
     return {shaders, 2};
   }
 
+  if (idn == "shadowMapShaderProgram"_id) {
+    // clang-format off
+    Shader shaders[] = {
+      makeShaderFromFile(GL_VERTEX_SHADER, shaderFolder + "/shadowMap.vert"),
+      makeShaderFromFile(GL_FRAGMENT_SHADER, shaderFolder + "/empty.frag")
+    };
+    // clang-format on
+
+    return {shaders, 3};
+  }
+
   throw std::runtime_error("Invalid shader program identifier");
 }

@@ -57,6 +57,10 @@ ember::Window::Window(std::string_view name, int width, int height) {
   glfwSetFramebufferSizeCallback(m_pWindow, resizeCallback);
   glfwSetMouseButtonCallback(m_pWindow, mouseButtonCallback);
   glfwSetScrollCallback(m_pWindow, scrollCallback);
+
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    throw std::runtime_error("Failed to initialize GLAD");
+  }
 }
 
 ember::Window::~Window() {
