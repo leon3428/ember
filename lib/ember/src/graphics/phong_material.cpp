@@ -19,12 +19,12 @@ ember::PhongMaterial::PhongMaterial()
       m_pLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_p")),
       m_normMatLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_normMat")) {}
 
-auto ember::PhongMaterial::uploadUniforms(const glm::mat4 &model, const glm::mat4 &view,
+auto ember::PhongMaterial::uploadUniforms(const glm::mat4 &transform, const glm::mat4 &transformInv,
                                             const glm::mat4 &projection) const -> void {
-  auto mv = view * model;
-  auto normMat = glm::mat3(glm::transpose(glm::inverse(mv)));
 
-  glUniformMatrix4fv(m_mvLocation, 1, GL_FALSE, glm::value_ptr(mv));
+  auto normMat = glm::mat3(glm::transpose(transformInv));
+
+  glUniformMatrix4fv(m_mvLocation, 1, GL_FALSE, glm::value_ptr(transform));
   glUniformMatrix4fv(m_pLocation, 1, GL_FALSE, glm::value_ptr(projection));
   glUniformMatrix3fv(m_normMatLocation, 1, GL_FALSE, glm::value_ptr(normMat));
 

@@ -15,7 +15,7 @@ class PhongMaterial : public Material {
   glm::vec3 specularColor;
   float shininess;
 
-  virtual auto uploadUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const
+  virtual auto uploadUniforms(const glm::mat4 &transform, const glm::mat4 &transformInv, const glm::mat4 &projection) const
       -> void override;
 
   inline auto setTexture(const Texture *pTexture) { m_pTexture = pTexture; }

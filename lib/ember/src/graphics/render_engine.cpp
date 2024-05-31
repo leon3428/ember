@@ -8,6 +8,7 @@
 #include <memory>
 #include <stdexcept>
 #include "../resource_manager/resource_manager.hpp"
+#include "glm/ext/quaternion_common.hpp"
 #include "light.hpp"
 #include "node.hpp"
 #include "renderable.hpp"
@@ -164,6 +165,7 @@ auto ember::RenderEngine::render(const Node *pScene) -> void {
 
   auto [width, height] = m_window.getSize();
   auto viewMat = m_pCamera->getViewMatrix();
+  auto viewMatInv = glm::inverse(viewMat);
   auto projectionMat = m_pCamera->getProjectionMatrix(width, height);
 
   m_renderQueue.clear();
@@ -178,7 +180,10 @@ auto ember::RenderEngine::render(const Node *pScene) -> void {
       lastShaderProgram = cmd.getProgram();
       pRenderable->pMaterial->bindProgram();
     }
-    pRenderable->pMaterial->uploadUniforms(pRenderable->getMatrix(), viewMat, projectionMat);
+    auto transform = viewMat * pRenderable->getMatrix();
+    auto transformInv = pRenderable->getInverse() * viewMatInv;
+
+    pRenderable->pMaterial->uploadUniforms(transform, transformInv, projectionMat);
     pRenderable->pVertexArray->bind();
 
     if (pRenderable->pVertexArray->isIndexed()) {

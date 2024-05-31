@@ -9,7 +9,7 @@ class VertexColorMaterial : public Material {
  public:
   VertexColorMaterial();
 
-  virtual auto uploadUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const
+  virtual auto uploadUniforms(const glm::mat4 &transform, const glm::mat4 &transformInv, const glm::mat4 &projection) const
       -> void override;
 
  private:

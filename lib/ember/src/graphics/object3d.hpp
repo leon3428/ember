@@ -13,7 +13,7 @@ class Object3d : public Node {
   virtual ~Object3d() = default;
 
   [[nodiscard]] auto getMatrix() const -> glm::mat4;
-  // [[nodiscard]] auto getInverse() const -> glm::mat4;
+  [[nodiscard]] auto getInverse() const -> glm::mat4;
 
   auto setPosition(const glm::vec3 &position) -> void;
 
@@ -35,11 +35,14 @@ class Object3d : public Node {
   [[nodiscard]] inline auto getRotation() const { return m_rotation; }
 
  private:
+  auto m_updateMatrices() const -> void;
+
   mutable bool m_dirty;
   glm::vec3 m_position;
   glm::vec3 m_scale;
   glm::quat m_rotation;
   mutable glm::mat4 m_mat;
+  mutable glm::mat4 m_inv;
 };
 
 }  // namespace ember

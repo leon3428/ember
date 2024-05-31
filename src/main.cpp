@@ -40,7 +40,7 @@ int main(int, char *argv[]) {
     pLight->setPosY(-8);
     pLight->setPosZ(5);
 
-    auto headNode = ember::loadObject("box"_id);
+    auto headNode = ember::loadObject("robotScene"_id);
     auto pHead = static_cast<ember::Renderable *>(headNode.getChild(0));
     scene.steal(headNode);
 
