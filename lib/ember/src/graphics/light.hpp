@@ -12,8 +12,7 @@ class Light : public Object3d {
   glm::vec4 ambientIntensity;
   glm::vec4 diffuseIntensity;
   glm::vec4 specularIntensity;
-
- private:
+  float angle;
 };
 
 }  // namespace ember

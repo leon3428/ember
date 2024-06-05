@@ -12,6 +12,7 @@
 #include <thread>
 
 #include "ember.hpp"
+#include "glm/trigonometric.hpp"
 
 int main(int, char *argv[]) {
   std::cout << argv[0] << ' ' << argv[1] << std::endl;
@@ -37,6 +38,7 @@ int main(int, char *argv[]) {
     pLight->ambientIntensity = {0.3f, 0.3f, 0.3f, 1.0f};
     pLight->diffuseIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
     pLight->specularIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
+    pLight->angle = glm::radians(75.0f);
     pLight->setPosY(8);
     pLight->setPosZ(1);
     pLight->lookAt({0.0f, 0.0f, -5.0f});

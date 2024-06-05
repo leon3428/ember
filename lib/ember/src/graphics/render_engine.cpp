@@ -146,7 +146,7 @@ ember::RenderEngine::RenderEngine(Window &window)
     emptyNormalMapData[i + 2] = 255;
   }
   Texture emptyNormalMap({size, size, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, true},
-                       emptyNormalMapData.data());
+                         emptyNormalMapData.data());
   getResourceManager()->moveTexture("EmberEmptyNormalMap"_id, std::move(emptyNormalMap));
 
   glEnable(GL_MULTISAMPLE);
@@ -250,13 +250,18 @@ auto ember::RenderEngine::m_uploadSceneData() -> void {
   auto [width, height] = m_window.getSize();
 
   auto pLight = m_lights[0];
-  auto p = glm::perspective(glm::radians(75.0f), 1.0f, 5.5f, 20.5f);
+  auto p = glm::perspective(pLight->angle, 1.0f, 5.5f, 20.5f);
   m_sceneData.light_pv = p * pLight->getInverse();
+  auto lightMat = pLight->getMatrix();
 
   m_sceneData.lightData.ambientIntensity = pLight->ambientIntensity;
   m_sceneData.lightData.diffuseIntensity = pLight->diffuseIntensity;
   m_sceneData.lightData.specularIntensity = pLight->specularIntensity;
   m_sceneData.lightData.position = glm::vec4(pLight->getPosition(), 1.0f);
+  m_sceneData.lightData.direction.x = lightMat[2][0];
+  m_sceneData.lightData.direction.y = lightMat[2][1];
+  m_sceneData.lightData.direction.z = lightMat[2][2];
+  m_sceneData.lightData.cosAngle = glm::cos(pLight->angle / 2.0f);
 
   auto viewMat = m_pCamera->getViewMatrix();
   auto projectionMat = m_pCamera->getProjectionMatrix(width, height);

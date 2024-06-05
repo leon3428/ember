@@ -8,6 +8,7 @@ out VS_OUT {
   vec3 FragPos;
   vec2 TexCoords;
   vec3 TangentLightPos;
+  vec3 TangentLightDir;
   vec3 TangentViewPos;
   vec3 TangentFragPos;
   vec4 LightSpacePos;
@@ -21,6 +22,8 @@ struct LightData {
   vec4 diffuseIntensity;
   vec4 specularIntensity;
   vec4 position;
+  vec4 direction;
+  float cosAngle;
 };
 
 struct SceneData {
@@ -48,6 +51,7 @@ void main() {
 
   mat3 TBN = transpose(mat3(T, B, N));    
   vs_out.TangentLightPos = TBN * vec3(sceneData.lightData.position);
+  vs_out.TangentLightDir = normalize(TBN * vec3(sceneData.lightData.direction));
   vs_out.TangentViewPos  = TBN * vec3(sceneData.viewPos);
   vs_out.TangentFragPos  = TBN * vs_out.FragPos;
 

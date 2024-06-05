@@ -4,6 +4,7 @@ in VS_OUT {
   vec3 FragPos;
   vec2 TexCoords;
   vec3 TangentLightPos;
+  vec3 TangentLightDir;
   vec3 TangentViewPos;
   vec3 TangentFragPos;
   vec4 LightSpacePos;
@@ -25,6 +26,8 @@ struct LightData {
   vec4 diffuseIntensity;
   vec4 specularIntensity;
   vec4 position;
+  vec4 direction;
+  float cosAngle;
 };
 
 struct SceneData {
@@ -50,19 +53,28 @@ float ShadowCalculation(vec4 fragPosLightSpace, float NdL) {
 }
 
 void main() {
-  vec3 normal = texture(normalMap, fs_in.TexCoords).rgb;
-  normal = normalize(normal * 2.0 - 1.0);  // this normal is in tangent space
-
-  vec3 lightDir = normalize(fs_in.TangentLightPos - fs_in.TangentFragPos);
-  vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
-  vec3 reflectDir = reflect(-lightDir, normal);
-
   vec3 texColor = texture(diffuseTexture, fs_in.TexCoords).xyz;  
-  float NdL = dot(lightDir, normal);
   vec3 Ia = sceneData.lightData.ambientIntensity.xyz * u_ambientColor * texColor;
-  vec3 Id = sceneData.lightData.diffuseIntensity.xyz * u_diffuseColor * texColor * max(NdL, 0.0);
-  vec3 Is = sceneData.lightData.specularIntensity.xyz * u_specularColor * pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
+  vec3 lightDir = normalize(fs_in.TangentLightPos - fs_in.TangentFragPos);
 
-  float shadow = ShadowCalculation(fs_in.LightSpacePos, NdL);
-  FragColor = vec4(Ia + (1.0 - shadow) * (Id + Is), 1.0f);
+  float theta = dot(fs_in.TangentLightDir, lightDir);
+
+  if(theta > sceneData.lightData.cosAngle) {
+    vec3 normal = texture(normalMap, fs_in.TexCoords).rgb;
+    normal = normalize(normal * 2.0 - 1.0);  // this normal is in tangent space
+
+    vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
+    vec3 reflectDir = reflect(-lightDir, normal);
+
+    float NdL = dot(lightDir, normal);
+    
+    vec3 Id = sceneData.lightData.diffuseIntensity.xyz * u_diffuseColor * texColor * max(NdL, 0.0);
+    vec3 Is = sceneData.lightData.specularIntensity.xyz * u_specularColor * pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
+
+    float shadow = ShadowCalculation(fs_in.LightSpacePos, NdL);
+    FragColor = vec4(Ia + (1.0 - shadow) * (Id + Is), 1.0f);
+  } else {
+    FragColor = vec4(Ia, 1.0f);
+  }
+
 }

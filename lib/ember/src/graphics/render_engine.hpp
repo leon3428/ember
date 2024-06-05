@@ -20,6 +20,8 @@ struct LightData {
   glm::vec4 diffuseIntensity;
   glm::vec4 specularIntensity;
   glm::vec4 position;
+  glm::vec4 direction;
+  float cosAngle;
 };
 
 struct SceneData {
