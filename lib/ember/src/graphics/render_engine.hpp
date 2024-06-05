@@ -4,31 +4,35 @@
 #include <glad/glad.h>
 #include <cstdint>
 #include <vector>
+#include "../config.hpp"
 #include "../core/window.hpp"
 #include "camera.hpp"
+#include "light.hpp"
 #include "node.hpp"
 #include "renderable.hpp"
 #include "shadow_map_material.hpp"
 #include "texture.hpp"
 #include "uniform_buffer.hpp"
-#include "light.hpp"
 
 namespace ember {
 
 struct LightData {
-  glm::vec4 ambientIntensity;
   glm::vec4 diffuseIntensity;
   glm::vec4 specularIntensity;
   glm::vec4 position;
   glm::vec4 direction;
   float cosAngle;
+  float padding[3];
 };
 
 struct SceneData {
   glm::mat4 camera_pv;
   glm::mat4 light_pv;
   glm::vec4 viewPos;
-  LightData lightData;
+  glm::vec4 ambientIntensity;
+  LightData lights[config::maxLights];
+  int lightCnt;
+  int padding[3];
 };
 
 class RenderCommand {

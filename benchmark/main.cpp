@@ -32,7 +32,7 @@ int main(int, char *argv[]) {
     auto scene = ember::Node();
 
     auto pLight = scene.emplaceChild<ember::Light>();
-    pLight->ambientIntensity = {0.3f, 0.3f, 0.3f, 1.0f};
+    // pLight->ambientIntensity = {0.3f, 0.3f, 0.3f, 1.0f};
     pLight->diffuseIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
     pLight->specularIntensity = {1.5f, 1.5f, 1.5f, 1.0f};
     pLight->setPosY(-8);

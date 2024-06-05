@@ -5,12 +5,15 @@
 #include <glad/glad.h>
 #include <algorithm>
 #include <array>
+#include <cstddef>
+#include <cstdint>
 #include <iostream>
 #include <limits>
 #include <stdexcept>
 #include "../config.hpp"
 #include "../resource_manager/resource_manager.hpp"
 #include "glm/ext/quaternion_common.hpp"
+#include "glm/fwd.hpp"
 #include "glm/trigonometric.hpp"
 #include "light.hpp"
 #include "node.hpp"
@@ -249,19 +252,23 @@ auto ember::RenderEngine::m_uploadSceneData() -> void {
   // TODO: support multiple lights
   auto [width, height] = m_window.getSize();
 
-  auto pLight = m_lights[0];
-  auto p = glm::perspective(pLight->angle, 1.0f, 5.5f, 20.5f);
-  m_sceneData.light_pv = p * pLight->getInverse();
-  auto lightMat = pLight->getMatrix();
+  m_sceneData.ambientIntensity = {0.3f, 0.3f, 0.3f, 1.0f};
+  m_sceneData.lightCnt = std::min(static_cast<int>(m_lights.size()), config::maxLights);
 
-  m_sceneData.lightData.ambientIntensity = pLight->ambientIntensity;
-  m_sceneData.lightData.diffuseIntensity = pLight->diffuseIntensity;
-  m_sceneData.lightData.specularIntensity = pLight->specularIntensity;
-  m_sceneData.lightData.position = glm::vec4(pLight->getPosition(), 1.0f);
-  m_sceneData.lightData.direction.x = lightMat[2][0];
-  m_sceneData.lightData.direction.y = lightMat[2][1];
-  m_sceneData.lightData.direction.z = lightMat[2][2];
-  m_sceneData.lightData.cosAngle = glm::cos(pLight->angle / 2.0f);
+  for (size_t i = 0; i < m_lights.size() && i < config::maxLights; i++) {
+    auto lightMat = m_lights[i]->getMatrix();
+    m_sceneData.lights[i].diffuseIntensity = m_lights[i]->diffuseIntensity;
+    m_sceneData.lights[i].specularIntensity = m_lights[i]->specularIntensity;
+    m_sceneData.lights[i].position = glm::vec4(m_lights[i]->getPosition(), 1.0f);
+    m_sceneData.lights[i].direction.x = lightMat[2][0];
+    m_sceneData.lights[i].direction.y = lightMat[2][1];
+    m_sceneData.lights[i].direction.z = lightMat[2][2];
+    m_sceneData.lights[i].cosAngle = glm::cos(m_lights[i]->angle / 2.0f);
+  }
+
+  auto pShadowCastingLight = m_lights[0];
+  auto p = glm::perspective(pShadowCastingLight->angle, 1.0f, 5.5f, 20.5f);
+  m_sceneData.light_pv = p * pShadowCastingLight->getInverse();
 
   auto viewMat = m_pCamera->getViewMatrix();
   auto projectionMat = m_pCamera->getProjectionMatrix(width, height);
