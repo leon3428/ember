@@ -8,7 +8,7 @@ auto ember::texture::load(Identifier idn) -> ember::Texture {
   auto textureDesc = pResourceIndex->getDescription<resource_desc::Texture>(idn);
 
   Image image(textureDesc->path);
-  Texture texture(image, 1);
+  Texture texture(image);
 
   return texture;
 }

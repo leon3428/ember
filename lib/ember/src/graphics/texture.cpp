@@ -1,13 +1,12 @@
 #include "texture.hpp"
 #include <GL/gl.h>
 
-ember::Texture::Texture(const Image &image, int textureUnit)
+ember::Texture::Texture(const Image &image)
     : ember::Texture::Texture({image.getWidth(), image.getHeight(), GL_RGB, GL_RGB, GL_UNSIGNED_BYTE,
                                GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, true},
-                              image.getDataPtr(), textureUnit) {}
+                              image.getDataPtr()) {}
 
-ember::Texture::Texture(const TextureDesc &textureDesc, const unsigned char *data, int textureUnit)
-    : m_textureUnit(textureUnit) {
+ember::Texture::Texture(const TextureDesc &textureDesc, const unsigned char *data) {
   glGenTextures(1, &m_textureId);
   glBindTexture(GL_TEXTURE_2D, m_textureId);
 
@@ -36,7 +35,6 @@ ember::Texture::~Texture() {
 
 ember::Texture::Texture(Texture &&other) {
   m_textureId = other.m_textureId;
-  m_textureUnit = other.m_textureUnit;
   other.m_textureId = 0;
 }
 
@@ -45,7 +43,6 @@ auto ember::Texture::operator=(Texture &&other) -> Texture & {
     if (m_textureId != 0) glDeleteTextures(1, &m_textureId);
 
     m_textureId = other.m_textureId;
-    m_textureUnit = other.m_textureUnit;
     other.m_textureId = 0;
   }
 

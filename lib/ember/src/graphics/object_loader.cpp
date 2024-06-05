@@ -41,6 +41,7 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
   auto pResourceIndex = getResourceIndex();
   Node root;
   auto pEmptyTexture = pResourceManager->getTexture("EmberEmptyTexture"_id);
+  auto pEmptyNormalMap = pResourceManager->getTexture("EmberEmptyNormalMap"_id);
 
   // load materials
   for (size_t i = 0; i < scene->mNumMaterials; i++) {
@@ -67,9 +68,25 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
         resource_desc::Texture textureDescription = {materialNameHash, textureName, resource_desc::TextureType::Diffuse,
                                                      texturePath.C_Str()};
         pResourceIndex->setDescription(textureNameHash, textureDescription);
-        pEmberMaterial->setTexture(pResourceManager->getTexture(textureNameHash));
+        pEmberMaterial->setDiffuseTexture(pResourceManager->getTexture(textureNameHash));
       } else {
-        pEmberMaterial->setTexture(pEmptyTexture);
+        pEmberMaterial->setDiffuseTexture(pEmptyTexture);
+      }
+
+      auto normalMapCnt = pMaterial->GetTextureCount(aiTextureType_HEIGHT);
+      if (normalMapCnt > 0) {
+        aiString texturePath;
+        pMaterial->GetTexture(aiTextureType_HEIGHT, 0, &texturePath);
+        auto textureName = materialName + "_normalMap";
+        std::cout << "Normal map: " << textureName << '\n';
+        auto textureNameHash = hash(textureName.c_str());
+
+        resource_desc::Texture textureDescription = {materialNameHash, textureName, resource_desc::TextureType::Normal,
+                                                     texturePath.C_Str()};
+        pResourceIndex->setDescription(textureNameHash, textureDescription);
+        pEmberMaterial->setNormalMap(pResourceManager->getTexture(textureNameHash));
+      } else {
+        pEmberMaterial->setNormalMap(pEmptyNormalMap);
       }
 
       aiColor3D ambientK, diffuseK, specularK;
@@ -108,15 +125,16 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
     auto meshNameHash = hash(meshName.c_str());
     auto pEmberMesh = pResourceManager->getMesh(meshNameHash);
     if (!pEmberMesh) {
-      std::vector<PosNormUvVertex> vertices;
+      std::vector<PosNormTanUvVertex> vertices;
       std::vector<uint32_t> indices;
 
       for (size_t i = 0; i < pMesh->mNumVertices; i++) {
         auto vertex = pMesh->mVertices[i];
         auto normal = pMesh->mNormals[i];
+        auto tangent = pMesh->mTangents[i];
         auto uv = pMesh->mTextureCoords[0][i];
         vertices.emplace_back(glm::vec3(vertex.x, vertex.y, vertex.z), glm::vec3(normal.x, normal.y, normal.z),
-                              glm::vec2(uv.x, uv.y));
+                              glm::vec3(tangent.x, tangent.y, tangent.z), glm::vec2(uv.x, uv.y));
       }
 
       for (size_t i = 0; i < pMesh->mNumFaces; i++) {
@@ -126,7 +144,7 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
         }
       }
 
-      Mesh emberMesh(std::span<PosNormUvVertex>{vertices}, indices);
+      Mesh emberMesh(std::span<PosNormTanUvVertex>{vertices}, indices);
       pResourceManager->moveMesh(meshNameHash, std::move(emberMesh));
       pEmberMesh = pResourceManager->getMesh(meshNameHash);
     }

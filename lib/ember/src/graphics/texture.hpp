@@ -20,8 +20,8 @@ struct TextureDesc {
 
 class Texture {
  public:
-  Texture(const Image &image, int textureUnit);
-  Texture(const TextureDesc &textureDesc, const unsigned char *data, int textureUnit);
+  Texture(const Image &image);
+  Texture(const TextureDesc &textureDesc, const unsigned char *data);
   ~Texture();
 
   Texture(const Texture &) = delete;
@@ -31,15 +31,14 @@ class Texture {
   auto operator=(Texture &&) -> Texture &;
 
   inline auto bind() const {
-    glActiveTexture(GL_TEXTURE0 + m_textureUnit);
     glBindTexture(GL_TEXTURE_2D, m_textureId);
   };
+
   inline auto unbind() const { glBindTexture(GL_TEXTURE_2D, 0); };
   [[nodiscard]] inline auto getTextureId() const { return m_textureId; }
 
  private:
   uint32_t m_textureId;
-  int m_textureUnit;
 };
 
 }  // namespace ember

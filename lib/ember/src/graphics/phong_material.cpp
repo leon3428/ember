@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 #include <glm/glm/gtc/type_ptr.hpp>
 #include "../resource_manager/resource_manager.hpp"
-#include "glm/matrix.hpp"
 
 ember::PhongMaterial::PhongMaterial()
     : Material(getResourceManager()->getShaderProgram("phongShaderProgram"_id)),
@@ -18,7 +17,8 @@ ember::PhongMaterial::PhongMaterial()
       m_modelLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_model")),
       m_modelInvLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "u_modelInv")),
       m_shadowMapLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "shadowMap")),
-      m_diffuseMapLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "diffuseTexture")) {}
+      m_diffuseMapLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "diffuseTexture")),
+      m_normalMapLocation(glGetUniformLocation(m_pShaderProgram->getShaderProgramId(), "normalMap")) {}
 
 auto ember::PhongMaterial::uploadUniforms(const glm::mat4 &model, const glm::mat4 &modelInv) const -> void {
   glUniformMatrix4fv(m_modelLocation, 1, GL_FALSE, glm::value_ptr(model));
@@ -30,6 +30,10 @@ auto ember::PhongMaterial::uploadUniforms(const glm::mat4 &model, const glm::mat
   glUniform1f(m_shininessLocation, shininess);
   glUniform1i(m_shadowMapLocation, 0);
   glUniform1i(m_diffuseMapLocation, 1);
+  glUniform1i(m_normalMapLocation, 2);
 
-  m_pTexture->bind();
+  glActiveTexture(GL_TEXTURE1);
+  m_pDiffuseTexture->bind();
+  glActiveTexture(GL_TEXTURE2);
+  m_pNormalMap->bind();
 }

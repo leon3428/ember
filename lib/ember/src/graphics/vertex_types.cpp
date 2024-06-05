@@ -34,6 +34,24 @@ auto ember::PosNormUvVertex::vertexAttrib() -> void {
   glEnableVertexAttribArray(2);
 }
 
+auto ember::PosNormTanUvVertex::vertexAttrib() -> void {
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(PosNormTanUvVertex),
+                        reinterpret_cast<void *>(offsetof(PosNormTanUvVertex, pos)));
+  glEnableVertexAttribArray(0);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(PosNormTanUvVertex),
+                        reinterpret_cast<void *>(offsetof(PosNormTanUvVertex, norm)));
+  glEnableVertexAttribArray(1);
+
+  glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(PosNormTanUvVertex),
+                        reinterpret_cast<void *>(offsetof(PosNormTanUvVertex, tan)));
+  glEnableVertexAttribArray(2);
+
+  glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(PosNormTanUvVertex),
+                        reinterpret_cast<void *>(offsetof(PosNormTanUvVertex, texCoord)));
+  glEnableVertexAttribArray(3);
+}
+
 auto ember::PosColVertex::vertexAttrib() -> void {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(PosColVertex),
                         reinterpret_cast<void *>(offsetof(PosColVertex, pos)));

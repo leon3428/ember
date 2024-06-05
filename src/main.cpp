@@ -42,13 +42,13 @@ int main(int, char *argv[]) {
     pLight->lookAt({0.0f, 0.0f, -5.0f});
 
     auto headNode = ember::loadObject("shadowMap2"_id);
-    // auto pCube = static_cast<ember::Renderable *>(headNode.getChild(0));
+    auto pCube = static_cast<ember::Renderable *>(headNode.getChild(0));
     scene.steal(headNode);
 
     ember::Circle cameraCurve(5.0f);
     scene.emplaceChild<ember::CurveNode>(&cameraCurve, 50);
 
-    ember::ObjectController objController(pLight, window);
+    ember::ObjectController objController(pCube, window);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 

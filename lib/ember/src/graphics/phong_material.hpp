@@ -18,11 +18,12 @@ class PhongMaterial : public Material {
   virtual auto uploadUniforms(const glm::mat4 &model, const glm::mat4 &modelInv) const
       -> void override;
 
-  inline auto setTexture(const Texture *pTexture) { m_pTexture = pTexture; }
+  inline auto setDiffuseTexture(const Texture *pTexture) { m_pDiffuseTexture = pTexture; }
+  inline auto setNormalMap(const Texture *pTexture) { m_pNormalMap = pTexture; }
 
  private:
-  // TODO: more than one texture
-  const Texture *m_pTexture;
+  const Texture *m_pDiffuseTexture;
+  const Texture *m_pNormalMap;
 
   int m_ambientColorLocation;
   int m_diffuseColorLocation;
@@ -32,6 +33,7 @@ class PhongMaterial : public Material {
   int m_modelInvLocation;
   int m_shadowMapLocation;
   int m_diffuseMapLocation;
+  int m_normalMapLocation;
 };
 }  // namespace ember
 

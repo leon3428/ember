@@ -113,7 +113,7 @@ ember::RenderEngine::RenderEngine(Window &window)
       m_SceneDataUniformBuffer(&m_sceneData, 2, GL_DYNAMIC_DRAW),
       m_shadowMap({config::shadowMapSize, config::shadowMapSize, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT,
                    GL_NEAREST, GL_NEAREST, false},
-                  NULL, 0) {
+                  NULL) {
 #ifdef NDEBUG
   glEnable(GL_DEBUG_OUTPUT);
   glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -136,8 +136,18 @@ ember::RenderEngine::RenderEngine(Window &window)
   std::array<unsigned char, size * size * 3> emptyTextureData;
   for (auto &v : emptyTextureData) v = 255;
   Texture emptyTexture({size, size, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, true},
-                       emptyTextureData.data(), 1);
+                       emptyTextureData.data());
   getResourceManager()->moveTexture("EmberEmptyTexture"_id, std::move(emptyTexture));
+
+  std::array<unsigned char, size * size * 3> emptyNormalMapData;
+  for (size_t i = 0; i < size * size * 3; i += 3) {
+    emptyNormalMapData[i] = 128;
+    emptyNormalMapData[i + 1] = 128;
+    emptyNormalMapData[i + 2] = 255;
+  }
+  Texture emptyNormalMap({size, size, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, true},
+                       emptyNormalMapData.data());
+  getResourceManager()->moveTexture("EmberEmptyNormalMap"_id, std::move(emptyNormalMap));
 
   glEnable(GL_MULTISAMPLE);
   glEnable(GL_CULL_FACE);
@@ -222,6 +232,7 @@ auto ember::RenderEngine::m_finalPass() -> void {
     }
 
     pRenderable->pMaterial->uploadUniforms(pRenderable->getMatrix(), pRenderable->getInverse());
+    glActiveTexture(GL_TEXTURE0);
     m_shadowMap.bind();
     pRenderable->pVertexArray->bind();
 

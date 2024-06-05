@@ -16,7 +16,8 @@ struct Object {
 
 enum class TextureType {
   Unknown,
-  Diffuse
+  Diffuse,
+  Normal
 };
 
 struct Texture {
