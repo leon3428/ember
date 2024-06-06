@@ -69,14 +69,7 @@ auto ember::Object3d::m_updateMatrices() const -> void {
   m_mat *= glm::mat4_cast(m_rotation);
   m_mat = glm::scale(m_mat, m_scale);
 
-  // if(m_scale.x == m_scale.y && m_scale.y == m_scale.z) {
-  //   m_inv = glm::mat4(1.0f);
-  //   m_inv = glm::scale(m_inv, 1.0f / m_scale);
-  //   m_inv *= glm::transpose(glm::mat4_cast(m_rotation));
-  //   m_inv = glm::translate(m_inv, -m_position);
-  // } else {
   m_inv = glm::inverse(m_mat);
-  // }
 }
 
 auto ember::Object3d::getMatrix() const -> glm::mat4 {

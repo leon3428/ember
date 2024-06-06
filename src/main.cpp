@@ -34,6 +34,21 @@ int main(int, char *argv[]) {
 
     auto scene = ember::Node();
 
+    // auto pLight = scene.emplaceChild<ember::Light>();
+    // pLight->diffuseIntensity = {0.5f, 0.0f, 0.0f, 1.0f};
+    // pLight->specularIntensity = {0.5f, 0.0f, 0.0f, 1.0f};
+    // pLight->angle = glm::radians(75.0f);
+    // pLight->setPosY(8);
+    // pLight->lookAt({0.0f, 0.0f, 0.0f});
+
+    // auto pAnotherLight = scene.emplaceChild<ember::Light>();
+    // pAnotherLight->diffuseIntensity = {0.0f, 0.0f, 0.5f, 1.0f};
+    // pAnotherLight->specularIntensity = {0.0f, 0.0f, 0.5f, 1.0f};
+    // pAnotherLight->angle = glm::radians(75.0f);
+    // pAnotherLight->setPosY(8);
+    // pAnotherLight->setPosX(5);
+    // pAnotherLight->lookAt({5.0f, 0.0f, 0.0f});
+
     auto pLight = scene.emplaceChild<ember::Light>();
     pLight->diffuseIntensity = {0.5f, 0.0f, 0.0f, 1.0f};
     pLight->specularIntensity = {0.5f, 0.0f, 0.0f, 1.0f};
@@ -42,11 +57,11 @@ int main(int, char *argv[]) {
     pLight->lookAt({0.0f, 0.0f, 0.0f});
 
     auto pAnotherLight = scene.emplaceChild<ember::Light>();
-    pAnotherLight->diffuseIntensity = {0.0f, 0.0f, 0.5f, 1.0f};
-    pAnotherLight->specularIntensity = {0.0f, 0.0f, 0.5f, 1.0f};
+    pAnotherLight->diffuseIntensity = {1.0f, 1.0f, 1.5f, 1.0f};
+    pAnotherLight->specularIntensity = {1.0f, 1.0f, 1.5f, 1.0f};
     pAnotherLight->angle = glm::radians(75.0f);
     pAnotherLight->setPosY(8);
-    pAnotherLight->setPosX(5);
+    pAnotherLight->setPosZ(5);
     pAnotherLight->lookAt({5.0f, 0.0f, 0.0f});
 
     auto pProgram = ember::getResourceManager()->getShaderProgram("phongShaderProgram"_id);
@@ -92,14 +107,14 @@ int main(int, char *argv[]) {
     std::cout << "Lights[2] diffuse: " << offsetof(ember::SceneData, lights[2].diffuseIntensity) << '\n';
     std::cout << "Light cnt: " << offsetof(ember::SceneData, lightCnt) << '\n';
 
-    auto headNode = ember::loadObject("shadowMap2"_id);
+    auto headNode = ember::loadObject("crate"_id);
     // auto pCube = static_cast<ember::Renderable *>(headNode.getChild(0));
     scene.steal(headNode);
 
     ember::Circle cameraCurve(5.0f);
     scene.emplaceChild<ember::CurveNode>(&cameraCurve, 50);
 
-    ember::ObjectController objController(pLight, window);
+    ember::ObjectController objController(pAnotherLight, window);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
