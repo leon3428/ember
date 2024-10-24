@@ -18,6 +18,7 @@
 #include "../src/graphics/shader.hpp"
 #include "../src/graphics/shader_program.hpp"
 #include "../src/graphics/solid_color_material.hpp"
+#include "../src/graphics/curve_loader.hpp"
 
 #include "../src/graphics/light.hpp"
 #include "../src/graphics/node.hpp"

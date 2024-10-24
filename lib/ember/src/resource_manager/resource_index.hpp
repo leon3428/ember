@@ -20,7 +20,7 @@ class ResourceIndex {
   }
 
  private:
-  VariantHashMap<Identifier, IdentifierHash, resource_desc::Object, resource_desc::Texture> m_resourceIndex;
+  VariantHashMap<Identifier, IdentifierHash, resource_desc::Object, resource_desc::Texture, resource_desc::Curve> m_resourceIndex;
 };
 
 inline auto getResourceIndex() -> ResourceIndex * {

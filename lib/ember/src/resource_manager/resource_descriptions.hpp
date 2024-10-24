@@ -27,6 +27,18 @@ struct Texture {
   std::filesystem::path path;
 };
 
+enum class CurveType {
+  Unknown,
+  CubicBSpline
+};
+
+struct Curve {
+  ember::Identifier parent;
+  std::string name;
+  CurveType curveType;
+  std::filesystem::path path;
+};
+
 template <typename T>
 auto load(const rapidjson::Value &value) -> T;
 
@@ -35,6 +47,10 @@ auto load<Object>(const rapidjson::Value &value) -> Object;
 
 template <>
 auto load<Texture>(const rapidjson::Value &value) -> Texture;
+
+template <>
+auto load<Curve>(const rapidjson::Value &value) -> Curve;
+
 
 }  // namespace ember::resource_desc
 

@@ -42,6 +42,10 @@ auto ember::project::load(std::filesystem::path path) -> void {
         auto textureDesc = resource_desc::load<resource_desc::Texture>(resource);
         textureDesc.path = path / textureDesc.path;
         resourceIndex->setDescription(nameHash, textureDesc);
+      } else if(strcmp(type, "curve") == 0) {
+        auto curveDesc = resource_desc::load<resource_desc::Curve>(resource);
+        curveDesc.path = path / curveDesc.path;
+        resourceIndex->setDescription(nameHash, curveDesc);
       }
     }
   }

@@ -10,6 +10,7 @@ set(PROJECT_HEADERS
     src/core/project_loader.hpp
     src/core/bezier.hpp
     src/core/circle.hpp
+    src/core/cubic_b_spline.hpp
     src/core/image.hpp
     src/core/curve.hpp
 
@@ -45,6 +46,7 @@ set(PROJECT_HEADERS
     src/graphics/light.hpp
     src/graphics/texture.hpp
     src/graphics/texture_loader.hpp
+    src/graphics/curve_loader.hpp
 
     src/resource_manager/resource_descriptions.hpp
     src/resource_manager/resource_manager.hpp
@@ -57,6 +59,7 @@ set(PROJECT_SOURCES
     src/core/project_loader.cpp
     src/core/bezier.cpp
     src/core/circle.cpp
+    src/core/cubic_b_spline.cpp
     src/core/image.cpp
 
     src/graphics/node.cpp
@@ -90,6 +93,7 @@ set(PROJECT_SOURCES
     src/graphics/light.cpp
     src/graphics/texture.cpp
     src/graphics/texture_loader.cpp
+    src/graphics/curve_loader.cpp
 
     src/resource_manager/resource_descriptions.cpp
     src/resource_manager/resource_manager.cpp
