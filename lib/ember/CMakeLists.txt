@@ -10,6 +10,7 @@ set(PROJECT_HEADERS
     src/core/project_loader.hpp
     src/core/bezier.hpp
     src/core/circle.hpp
+    src/core/line.hpp
     src/core/cubic_b_spline.hpp
     src/core/image.hpp
     src/core/curve.hpp
@@ -59,6 +60,7 @@ set(PROJECT_SOURCES
     src/core/project_loader.cpp
     src/core/bezier.cpp
     src/core/circle.cpp
+    src/core/line.cpp
     src/core/cubic_b_spline.cpp
     src/core/image.cpp
 

@@ -19,6 +19,7 @@ class CurveNode : public Object3d {
 
   auto update() -> void;
   inline auto setColor(glm::vec4 color) { m_curveMaterial.color = color; }
+  inline auto getRenderable() const { return m_pCurveRenderable; }
 
  private:
   const ICurve *m_pCurve;

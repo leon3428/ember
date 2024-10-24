@@ -27,6 +27,8 @@ class Node {
   [[nodiscard]] inline auto getChild(size_t i) const { return m_children[i].get(); }
   auto steal(Node &other) -> void;
 
+  [[nodiscard]] inline auto childCnt() const { return m_children.size(); }
+
   class Iterator {
    public:
     using iterator_category = std::forward_iterator_tag;

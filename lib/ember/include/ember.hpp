@@ -3,6 +3,8 @@
 
 #include "../src/core/bezier.hpp"
 #include "../src/core/circle.hpp"
+#include "../src/core/line.hpp"
+#include "../src/core/cubic_b_spline.hpp"
 #include "../src/core/project_loader.hpp"
 #include "../src/core/window.hpp"
 #include "../src/graphics/curve_node.hpp"

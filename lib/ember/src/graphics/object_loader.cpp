@@ -27,7 +27,7 @@ auto ember::loadObject(Identifier idn) -> ember::Node {
   // clang-format off
   auto scene = importer.ReadFile(
     description->path, 
-    aiProcess_CalcTangentSpace | aiProcess_Triangulate |
+    aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_Triangulate |
     aiProcess_JoinIdenticalVertices | aiProcess_SortByPType |
     aiProcess_FlipUVs | aiProcess_GenNormals
   );

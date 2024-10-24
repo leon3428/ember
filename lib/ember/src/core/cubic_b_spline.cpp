@@ -29,3 +29,16 @@ auto ember::CubicBSpline::getPosition(float t) const -> Eigen::Vector3f {
 
   return t_vec * m_B * m_controlPoints.block(firstPoint, 0, 4, 3);
 }
+
+auto ember::CubicBSpline::getTangent(float t) const -> Eigen::Vector3f {
+  auto segmentCnt = static_cast<size_t>(m_controlPoints.rows()) - 3;
+  auto tPerSegment = 1.0f / static_cast<float>(segmentCnt);
+  auto firstPoint = static_cast<size_t>(t / tPerSegment);
+  if (firstPoint == segmentCnt) firstPoint--;
+  auto segT = (t - static_cast<float>(firstPoint) * tPerSegment) / tPerSegment;
+
+  Eigen::RowVector4f t_vec;
+  t_vec << 3.0f * std::pow(segT, 2), 2.0f * segT, 1.0f, 0.0f;
+
+  return t_vec * m_B * m_controlPoints.block(firstPoint, 0, 4, 3);
+}

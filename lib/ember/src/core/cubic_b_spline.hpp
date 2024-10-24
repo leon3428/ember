@@ -14,6 +14,7 @@ class CubicBSpline : public ICurve {
   auto addControlPoint(Eigen::Vector3f p) -> void;
 
   virtual auto getPosition(float t) const -> Eigen::Vector3f override;
+  auto getTangent(float t) const -> Eigen::Vector3f;
 
  private:
   Eigen::MatrixXf m_controlPoints;
